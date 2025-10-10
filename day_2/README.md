@@ -2,7 +2,7 @@
 
 **date:** 10 october 2025
 
-## overview
+## Overview
 
 we implemented and compared three algorithms (3.1, 3.2, and 3.3) as part of our class assignment.
 each algorithm focuses on identifying and maintaining the most frequently appearing elements in a dataset.
