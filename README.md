@@ -1,3 +1,4 @@
 # TEUKU_zikri
 
-test
+test git push
+test remote
