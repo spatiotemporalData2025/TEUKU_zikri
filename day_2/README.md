@@ -33,6 +33,23 @@ this is a more precise version of the least frequently used (lfu) algorithm.
 ## Implementation and result
 
 the test implementation of these algorithms was written in python and located in the file `test_algorithm.py`.
+
+data example:
+
+`
+[
+    "Tokyo", "Kyoto", "Osaka", "Tokyo", "Nagoya", "Osaka", "Tokyo",
+    "Kyoto", "Shizuoka", "Kyoto", "Osaka", "Tokyo", "Kobe", "Tokyo",
+    "Kyoto", "Tokyo", "Hiroshima", "Osaka", "Tokyo", "Kyoto", "Sendai",
+    "Tokyo", "Tokyo", "Osaka", "Kyoto", "Nagoya", "Tokyo", "Kyoto",
+    "Tokyo", "Osaka", "Tokyo", "Kyoto", "Tokyo", "Tokyo", "Osaka",
+    "Kyoto", "Tokyo", "Nagoya", "Tokyo", "Kyoto", "Osaka", "Tokyo",
+    "Fukuoka", "Tokyo", "Kyoto", "Tokyo", "Sapporo", "Kyoto", "Osaka",
+    "Tokyo", "Kyoto", "Tokyo", "Osaka", "Kyoto", "Tokyo", "Nagoya",
+    "Tokyo", "Kyoto", "Osaka", "Tokyo", "Tokyo", "Kyoto", "Tokyo",
+    "Tokyo", "Osaka", "Tokyo", "Kyoto"
+]`
+
 the execution result can be seen below.
 
 ![execution result](image_1.png)
