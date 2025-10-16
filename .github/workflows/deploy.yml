@@ -1,22 +1,35 @@
-name: Deploy Slidev
+name: Deploy Slidev to GitHub Pages
+
 on:
   push:
     branches:
-      - main
+      - main  # jalankan setiap kali ada push ke branch main
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     defaults:
       run:
-        working-directory: TEUKU_zikri/test_slidev/my-slidev
+        working-directory: TEUKU_zikri/my-slidev # project location
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Slidev presentation
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./TEUKU_zikri/test_slidev/my-slidev/dist
+          publish_dir: ./TEUKU_zikri/my-slidev/dist
