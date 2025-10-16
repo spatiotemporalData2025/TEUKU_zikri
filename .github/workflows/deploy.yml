@@ -11,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: TEUKU_zikri/my-slidev # project location
+        working-directory: my-slidev
 
     steps:
       - name: Checkout repository
