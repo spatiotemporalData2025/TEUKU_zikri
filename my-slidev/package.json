@@ -3,14 +3,17 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --base /TEUKU_zikri/my-slidev/",
     "dev": "slidev --open",
-    "export": "slidev export"
+    "build": "slidev build --base /TEUKU_zikri/",
+    "export": "slidev export",
+    "start": "npm run dev"
   },
   "dependencies": {
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
     "@slidev/cli": "^52.2.5",
     "@slidev/theme-default": "latest",
-    "@slidev/theme-seriph": "latest",
-    "vue": "^3.5.22"
+    "@slidev/theme-seriph": "latest"
   }
 }
