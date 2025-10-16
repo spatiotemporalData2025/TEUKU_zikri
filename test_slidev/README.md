@@ -76,5 +76,27 @@ jobs:
           publish_dir: ./dist
 
 ```
+push it to github
 
-and push it to git
+### 7. Activate GitHub Pages
+Go to your repository page on GitHub.
+
+Click Settings → Pages.
+
+In the Build and deployment section, select:
+
+Source: “Deploy from a branch”
+
+Branch: gh-pages
+
+Then click Save.
+
+### 8. Result
+
+Wait for 1–2 minutes
+
+GitHub will automatically build your Slidev project.
+
+Once it’s done, you’ll get a link like this:
+
+`https://username.github.io/your-repo-name/`
