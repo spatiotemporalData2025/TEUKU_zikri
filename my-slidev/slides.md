@@ -27,7 +27,7 @@ mdc: true
 Team B 
 
 <div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10">
-  Press Space for next page <carbon:arrow-right />
+  Implementation Algorithm 3.1 on Language Learning Process <carbon:arrow-right />
 </div>
 
 <div class="abs-br m-6 text-xl">
@@ -47,21 +47,18 @@ The last comment block of each slide will be treated as slide notes. It will be 
 transition: fade-out
 ---
 
-# What is Slidev?
+# Introduction
 
 Slidev is a slides maker and presenter designed for developers, consist of the following features
 
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
+- Team B has many international members. It’s like 40% of our group.
+- The biggest issue we face is language barriers.
+- Maybe we can use knowledge we got in this course to solve our problem. 
+
 <br>
 <br>
 
-Read more about [Why Slidev?](https://sli.dev/guide/why)
+<!--Read more about [Why Slidev?](https://sli.dev/guide/why)-->
 
 <!--
 You can have `style` tag in markdown to override the style for the current page.
