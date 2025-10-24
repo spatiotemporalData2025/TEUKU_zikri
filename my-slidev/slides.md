@@ -49,11 +49,13 @@ transition: fade-out
 
 # Introduction
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
 
-- Team B has many international members. It’s like 40% of our group.
+- Team B has many international members. It’s like 30% of our group.
+<br>
 - The biggest issue we face is language barriers.
-- Maybe we can use knowledge we got in this course to solve our problem. 
+<br>
+
+Maybe we can use knowledge we got in this course to solve our problem. 
 
 <br>
 <br>
@@ -86,69 +88,50 @@ transition: slide-up
 level: 2
 ---
 
-# Navigation
+# Problem when learning new Language
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
+- Memorizing new vocabulary is time-consuming and involves a large volume of words
+- It is more efficient to start with the vocabulary that appears most frequently (in real-world context).
 
-## Keyboard Shortcuts
 
-|                                                     |                             |
-| --------------------------------------------------- | --------------------------- |
-| <kbd>right</kbd> / <kbd>space</kbd>                 | next animation or slide     |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd>                                       | previous slide              |
-| <kbd>down</kbd>                                     | next slide                  |
-
-<!-- https://sli.dev/guide/animations.html#click-animation -->
+<!-- https://sli.dev/guide/animations.html#click-animation
 <img
   v-click
   class="absolute -bottom-9 -left-7 w-80 opacity-50"
   src="https://sli.dev/assets/arrow-bottom-left.svg"
   alt=""
-/>
+/> 
 <p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
-
----
-layout: two-cols
-layoutClass: gap-16
+-->
 ---
 
-# Table of contents
+# The Idea
 
-You can use the `Toc` component to generate a table of contents for your slides:
+We apply course techniques (Algorithm 3.1) to extract frequently used vocabulary from real-world videos, helping learners prioritize what to memorize
 
-```html
-<Toc minDepth="1" maxDepth="1" />
+```python [algorithm_3_1] {all|4|5-6|7|8-22|all} twoslash
+def misra_gries(stream, k):
+    if k <= 1:
+        raise ValueError("k must be > 1")
+    counters = {}
+    for x in stream:
+        if x in counters:
+            counters[x] += 1
+        elif len(counters) < k - 1:
+            counters[x] = 1
+        else:
+            # decrement all
+            remove_keys = []
+            for y in list(counters.keys()):
+                counters[y] -= 1
+                if counters[y] == 0:
+                    remove_keys.append(y)
+            for y in remove_keys:
+                del counters[y]
+    return counters
 ```
 
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
-
-::right::
-
-<Toc text-sm minDepth="1" maxDepth="2" />
-
----
-layout: image-right
-image: https://cover.sli.dev
----
-
-# Code
-
-Use code snippets and get the highlighting directly, and even types hover!
-
-```ts [filename-example.ts] {all|4|6|6-7|9|all} twoslash
-// TwoSlash enables TypeScript hover information
-// and errors in markdown code blocks
-// More at https://shiki.style/packages/twoslash
-import { computed, ref } from 'vue'
-
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
-
-doubled.value = 2
-```
-
-<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="342" color="#953" width="2" arrowSize="1" />
+<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="360" color="#953" width="2" arrowSize="1" />
 
 <!-- This allow you to embed external code blocks -->
 <<< @/snippets/external.ts#snippet
