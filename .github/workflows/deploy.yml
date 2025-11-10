@@ -16,31 +16,31 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      # Build Algo1
-      - name: Install & build Algo1 Slidev
+      # Build Algo1 Slidev
+      - name: Install & build Algo1
         working-directory: ./Algo1/algo1-slidev
         run: |
           npm install
           npm run build -- --base /TEUKU_zikri/Algo1/
 
-      # Build Algo2
-      - name: Install & build Algo2 Slidev
+      # Build Algo2 Slidev
+      - name: Install & build Algo2
         working-directory: ./Algo2/algo2-slidev
         run: |
           npm install
           npm run build -- --base /TEUKU_zikri/Algo2/
 
-      # Gabungkan keduanya ke folder publik untuk gh-pages
+      # Gabungkan output ke folder publik untuk gh-pages
       - name: Prepare deploy directory
         run: |
+          rm -rf public
           mkdir -p public/Algo1 public/Algo2
 
           cp -r Algo1/algo1-slidev/dist/* public/Algo1/
           cp -r Algo2/algo2-slidev/dist/* public/Algo2/
 
-          # (opsional) index di root untuk link cepat
+          # index.html di root (optional, daftar link)
           cat > public/index.html << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
@@ -51,8 +51,8 @@ jobs:
           <body>
             <h1>TEUKU_zikri Slidev Collections</h1>
             <ul>
-              <li><a href="./Algo1/">Algo1 Slide</a></li>
-              <li><a href="./Algo2/">Algo2 Slide</a></li>
+              <li><a href="./Algo1/">Algo1 Slides</a></li>
+              <li><a href="./Algo2/">Algo2 Slides</a></li>
             </ul>
           </body>
           </html>
