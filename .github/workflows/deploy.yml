@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Algo2/algo2-slidev
+        working-directory: ./algo2-slidev
 
     steps:
       - name: Checkout repository
