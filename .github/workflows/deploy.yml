@@ -1,4 +1,4 @@
-name: Deploy Algo2 Slidev
+name: Slidev Deploy
 
 on:
   push:
