@@ -2,6 +2,10 @@
 
 **date:** 10 october 2025
 
+
+slides:
+https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo1
+
 ## Overview
 
 we implemented and compared three algorithms (3.1, 3.2, and 3.3) as part of our class assignment.
