@@ -18,18 +18,18 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: ./algo2-slidev
+        working-directory: ./Algo2/algo2-slidev
         run: npm ci
 
       - name: Build Slidev
-        working-directory: ./algo2-slidev
-        run: npm run build -- --base /TEUKU_zikri/
+        working-directory: ./Algo2/algo2-slidev
+        run: npm run build -- --base /TEUKU_zikri/Algo2/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: ./algo2-slidev/dist
+          publish_dir: ./Algo2/algo2-slidev/dist
           publish_branch: gh-pages
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
