@@ -20,22 +20,25 @@ jobs:
       # === Build Algo1 ===
       - name: Build Algo1 Slidev
         run: |
+          set -e
           cd Algo1/algo1-slidev
           npm install
           npx slidev build
-          mv dist ../../../dist_Algo1
+          mv dist ../../dist_Algo1
 
       # === Build Algo2 ===
       - name: Build Algo2 Slidev
         run: |
+          set -e
           cd Algo2/algo2-slidev
           npm install
           npx slidev build
-          mv dist ../../../dist_Algo2
+          mv dist ../../dist_Algo2
 
       # === Combine both and add index.html ===
       - name: Combine and prepare for deployment
         run: |
+          set -e
           mkdir public
           mv dist_Algo1 public/Algo1
           mv dist_Algo2 public/Algo2
