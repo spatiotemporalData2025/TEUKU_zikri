@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Slidev
         working-directory: ./Algo2/algo2-slidev
-        run: npm run build -- --base /TEUKU_zikri/Algo2/algo2-slidev/
+        run: npm run build -- --base /TEUKU_zikri/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
