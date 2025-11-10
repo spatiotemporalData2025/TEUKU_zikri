@@ -9,9 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # === Checkout Repository ===
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # === Setup Node.js ===
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
@@ -21,25 +23,34 @@ jobs:
       - name: Build Algo1 Slidev
         run: |
           set -e
+          echo "📦 Building Algo1..."
           cd Algo1/algo1-slidev
-          npm install
-          npx slidev build
+          npm ci || npm install
+          npx slidev build || { echo "❌ Algo1 build failed"; exit 1; }
+          echo "✅ Algo1 build complete"
+          ls -R dist || echo "⚠️ dist folder missing"
           mv dist ../../dist_Algo1
+          cd ../..
 
       # === Build Algo2 ===
       - name: Build Algo2 Slidev
         run: |
           set -e
+          echo "📦 Building Algo2..."
           cd Algo2/algo2-slidev
-          npm install
-          npx slidev build
+          npm ci || npm install
+          npx slidev build || { echo "❌ Algo2 build failed"; exit 1; }
+          echo "✅ Algo2 build complete"
+          ls -R dist || echo "⚠️ dist folder missing"
           mv dist ../../dist_Algo2
+          cd ../..
 
       # === Combine both and add index.html ===
       - name: Combine and prepare for deployment
         run: |
           set -e
-          mkdir public
+          echo "🧩 Preparing combined folder..."
+          mkdir -p public
           mv dist_Algo1 public/Algo1
           mv dist_Algo2 public/Algo2
           cat <<EOF > public/index.html
@@ -61,7 +72,7 @@ jobs:
           </body>
           </html>
           EOF
-          
+
       # === Deploy to GitHub Pages ===
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
