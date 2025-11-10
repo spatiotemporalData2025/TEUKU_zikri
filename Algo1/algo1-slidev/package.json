@@ -1,0 +1,19 @@
+{
+  "name": "algo1-slidev",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build --base /TEUKU_zikri/Algo1/",
+    "export": "slidev export",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^52.2.5",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest"
+  }
+}
