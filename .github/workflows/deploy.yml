@@ -64,16 +64,6 @@ jobs:
           
       # === Deploy to GitHub Pages ===
       - name: Deploy to GitHub Pages
-        id: deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-        continue-on-error: true
-
-      # === Fallback jika gagal push (403 error) ===
-      - name: Retry deploy with PERSONAL_TOKEN if default token fails
-        if: steps.deploy.outcome == 'failure'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PERSONAL_TOKEN }}
