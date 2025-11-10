@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-deploy:
+    permissions: write-all
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -28,6 +29,13 @@ jobs:
 
       - name: Build Slidev
         run: npm run build
+
+      - name: Check build result
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Build failed: dist folder not found"
+            exit 1
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
