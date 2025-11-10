@@ -73,9 +73,11 @@ jobs:
           </html>
           EOF
 
-      # === Deploy to GitHub Pages ===
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: ./public
+      # === Build Algo2 ===
+      - name: Build Algo2 Slidev
+        run: |
+          set -e
+          cd Algo2/algo2-slidev
+          npm install
+          npx vite build --config vite.config.mjs
+          mv ../../dist_Algo2 ../../dist_Algo2
