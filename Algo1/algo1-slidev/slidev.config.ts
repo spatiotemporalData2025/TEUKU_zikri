@@ -1,5 +1,5 @@
 export default {
-  title: 'Algorithm 1 - Language Learning',
+  title: 'Algorithm 1 Presentation',
   theme: 'seriph',
-  base: './',
+  base: '/TEUKU_zikri/Algo1/',
 }
