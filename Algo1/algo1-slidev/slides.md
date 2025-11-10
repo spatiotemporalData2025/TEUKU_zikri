@@ -2,6 +2,10 @@
 theme: seriph
 title: Algorithm 3.1 - Language Learning
 transition: slide-left
+---
+theme: serif
+title: Algorithm 1 - Language Learning
+transition: slide-left
 mdc: true
 ---
 
@@ -9,16 +13,11 @@ mdc: true
 ## Team B – Language Learning Optimization
 
 <div class="mt-6 text-gray-400 text-sm">
-  Implementation of Algorithm 3.1 on Language Learning Process  
-  — <i>Tokyo Metropolitan University, Team B</i>
+    Implementation of Algorithm 3.1 on Language Learning Process  
+    — <i>Tokyo Metropolitan University, Team B</i>
 </div>
 
 ---
-
-# Problem Statement
-
-- Learning a new language involves memorizing thousands of words.
-- Most learners struggle to prioritize *which* words are important.
 - Our idea: extract the **most frequent** words from real-world context.
 
 ---
@@ -47,3 +46,5 @@ def misra_gries(stream, k):
                 if counters[y] == 0:
                     del counters[y]
     return counters
+
+```
