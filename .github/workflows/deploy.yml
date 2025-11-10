@@ -1,83 +1,38 @@
-name: Deploy both Slidev projects (Algo1 & Algo2)
+name: Deploy Algo2 Slidev
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - "Algo2/algo2-slidev/**"
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Algo2/algo2-slidev
 
     steps:
-      # === Checkout Repository ===
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # === Setup Node.js ===
-      - name: Setup Node.js 20
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # === Build Algo1 ===
-      - name: Build Algo1 Slidev
-        run: |
-          set -e
-          echo "📦 Building Algo1..."
-          cd Algo1/algo1-slidev
-          npm ci || npm install
-          npx slidev build || { echo "❌ Algo1 build failed"; exit 1; }
-          echo "✅ Algo1 build complete"
-          ls -R dist || echo "⚠️ dist folder missing"
-          mv dist ../../dist_Algo1
-          cd ../..
+      - name: Install dependencies
+        run: npm ci
 
-      # === Build Algo2 ===
-      - name: Build Algo2 Slidev
-        run: |
-          set -e
-          echo "📦 Building Algo2..."
-          cd Algo2/algo2-slidev
-          npm ci || npm install
-          npx slidev build || { echo "❌ Algo2 build failed"; exit 1; }
-          echo "✅ Algo2 build complete"
-          ls -R dist || echo "⚠️ dist folder missing"
-          mv dist ../../dist_Algo2
-          cd ../..
+      - name: Build Slidev
+        run: npm run build
 
-      # === Combine both and add index.html ===
-      - name: Combine and prepare for deployment
-        run: |
-          set -e
-          echo "🧩 Preparing combined folder..."
-          mkdir -p public
-          mv dist_Algo1 public/Algo1
-          mv dist_Algo2 public/Algo2
-          cat <<EOF > public/index.html
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>My Slidev Projects</title>
-            <style>
-              body { font-family: sans-serif; text-align: center; margin-top: 60px; background: #111; color: #eee; }
-              a { color: #00ccff; text-decoration: none; font-size: 1.2em; display: block; margin: 10px; }
-              a:hover { text-decoration: underline; }
-            </style>
-          </head>
-          <body>
-            <h1>My Slidev Presentations</h1>
-            <p><a href="Algo1/">👉 Algo1 Presentation</a></p>
-            <p><a href="Algo2/">👉 Algo2 Presentation</a></p>
-          </body>
-          </html>
-          EOF
-
-      # === Build Algo2 ===
-      - name: Build Algo2 Slidev
-        run: |
-          set -e
-          cd Algo2/algo2-slidev
-          npm install
-          npx vite build --config vite.config.mjs
-          mv ../../dist_Algo2 ../../dist_Algo2
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: Algo2/algo2-slidev/dist
+          publish_branch: gh-pages
+          destination_dir: algo2
