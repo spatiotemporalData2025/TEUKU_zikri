@@ -1,0 +1,1 @@
+import{f as o,o as t,j as s}from"../modules/vue-BZkwjUey.js";import{b as l}from"../index-DU-p6wU2.js";const a={},n={class:"slidev-layout default"};function r(e,c){return t(),o("div",n,[s(e.$slots,"default")])}const _=l(a,[["render",r],["__file","/home/apon/TEUKU_zikri/Algo2/algo2-slidev/node_modules/@slidev/client/layouts/default.vue"]]);export{_ as I};

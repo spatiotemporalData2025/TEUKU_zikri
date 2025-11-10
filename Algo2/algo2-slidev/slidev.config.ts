@@ -1,5 +1,5 @@
 export default {
-  title: 'Algorithm 2 Presentation',
+  title: 'Algorithm 2 - Example Project',
   theme: 'default',
-  base: '/Algo2/',
+  base: '/TEUKU_zikri/Algo2/',
 }
