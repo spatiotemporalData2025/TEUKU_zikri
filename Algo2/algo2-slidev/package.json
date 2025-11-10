@@ -1,0 +1,15 @@
+{
+  "name": "algo2-slidev",
+  "version": "1.0.0",
+  "description": "Slidev presentation for Algorithm 2",
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.48.9",
+    "@slidev/theme-apple-basic": "^0.25.1",
+    "@slidev/theme-default": "latest"
+  }
+}

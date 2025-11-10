@@ -1,22 +1,12 @@
-
-name: Deploy Slidev to GitHub Pages
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+name: Deploy both Slidev projects (Algo1 & Algo2)
 
 on:
   push:
-    branches:
-      - main  # jalankan setiap kali ada push ke branch main
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: my-slidev
 
     steps:
       - name: Checkout repository
@@ -25,19 +15,53 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-          # Look for the lockfile inside the my-slidev folder
-          cache-dependency-path: my-slidev/package-lock.json
+          node-version: 18
 
-      - name: Install dependencies
-        run: npm ci
+      # === Build Algo1 ===
+      - name: Build Algo1 Slidev
+        run: |
+          cd Algo1/algo1-slidev
+          npm install
+          npx slidev build
+          mv dist ../../../dist_Algo1
 
-      - name: Build Slidev presentation
-        run: npm run build
+      # === Build Algo2 ===
+      - name: Build Algo2 Slidev
+        run: |
+          cd Algo2/algo2-slidev
+          npm install
+          npx slidev build
+          mv dist ../../../dist_Algo2
 
+      # === Combine both and add index.html ===
+      - name: Combine and prepare for deployment
+        run: |
+          mkdir public
+          mv dist_Algo1 public/Algo1
+          mv dist_Algo2 public/Algo2
+          cat <<EOF > public/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>My Slidev Projects</title>
+            <style>
+              body { font-family: sans-serif; text-align: center; margin-top: 60px; background: #111; color: #eee; }
+              a { color: #00ccff; text-decoration: none; font-size: 1.2em; display: block; margin: 10px; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>My Slidev Presentations</h1>
+            <p><a href="Algo1/">👉 Algo1 Presentation</a></p>
+            <p><a href="Algo2/">👉 Algo2 Presentation</a></p>
+          </body>
+          </html>
+          EOF
+
+      # === Deploy to GitHub Pages ===
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: my-slidev/dist
+          publish_dir: ./public
