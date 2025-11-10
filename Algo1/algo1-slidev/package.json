@@ -1,19 +1,14 @@
 {
   "name": "algo1-slidev",
-  "type": "module",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Slidev presentation for Algorithm 3.1 - Language Learning",
   "scripts": {
     "dev": "slidev --open",
-    "build": "slidev build --base /TEUKU_zikri/Algo1/",
-    "export": "slidev export",
-    "start": "npm run dev"
+    "build": "slidev build",
+    "export": "slidev export"
   },
   "dependencies": {
-    "vue": "^3.5.22"
-  },
-  "devDependencies": {
-    "@slidev/cli": "^52.2.5",
-    "@slidev/theme-default": "latest",
+    "@slidev/cli": "^52.6.0",
     "@slidev/theme-seriph": "latest"
   }
 }
