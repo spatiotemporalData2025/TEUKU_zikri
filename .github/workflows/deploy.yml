@@ -23,6 +23,7 @@ jobs:
 
       - name: Build Slidev
         working-directory: ./Algo2/algo2-slidev
+        # base path di-set ke /TEUKU_zikri/ agar cocok dengan GitHub Pages
         run: npm run build -- --base /TEUKU_zikri/
 
       - name: Deploy to GitHub Pages
