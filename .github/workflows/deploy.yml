@@ -1,18 +1,18 @@
-name: Slidev Deploy
+name: Deploy Algo2 Slidev
 
 on:
   push:
     branches:
       - main
     paths:
-      - "Algo2/algo2-slidev/**"
+      - "./algo2-slidev/**"
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: algo2-slidev
+        working-directory: Algo2/algo2-slidev
 
     steps:
       - name: Checkout repository
@@ -33,6 +33,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: algo2-slidev/dist
+          publish_dir: ./algo2-slidev/dist
           publish_branch: gh-pages
           destination_dir: algo2
