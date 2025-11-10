@@ -1,32 +1,38 @@
-name: Deploy Slidev to GitHub Pages
+name: Deploy Algo2 Slidev
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - "Algo2/algo2-slidev/**"
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: algo2-slidev
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: ./algo2-slidev
         run: npm ci
 
       - name: Build Slidev
-        working-directory: ./algo2-slidev
-        run: npm run build -- --base /${{ github.event.repository.name }}/
+        run: npm run build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PERSONAL_TOKEN }}
           publish_dir: ./algo2-slidev/dist
+          publish_branch: gh-pages
+          destination_dir: algo2
