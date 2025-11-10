@@ -24,7 +24,7 @@ mdc: true
 duration: 35min
 ---
 
-# Welcome to Slidev
+# R-Tree Implementation
 
 Presentation slides for developers
 
