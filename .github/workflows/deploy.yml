@@ -16,21 +16,53 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
-      - name: Install dependencies
-        working-directory: ./Algo2/algo2-slidev
-        run: npm install
+      # Build Algo1
+      - name: Install & build Algo1 Slidev
+        working-directory: ./Algo1/algo1-slidev
+        run: |
+          npm install
+          npm run build -- --base /TEUKU_zikri/Algo1/
 
-      - name: Build Slidev
+      # Build Algo2
+      - name: Install & build Algo2 Slidev
         working-directory: ./Algo2/algo2-slidev
-        # base path di-set ke /TEUKU_zikri/ agar cocok dengan GitHub Pages
-        run: npm run build -- --base /TEUKU_zikri/
+        run: |
+          npm install
+          npm run build -- --base /TEUKU_zikri/Algo2/
+
+      # Gabungkan keduanya ke folder publik untuk gh-pages
+      - name: Prepare deploy directory
+        run: |
+          mkdir -p public/Algo1 public/Algo2
+
+          cp -r Algo1/algo1-slidev/dist/* public/Algo1/
+          cp -r Algo2/algo2-slidev/dist/* public/Algo2/
+
+          # (opsional) index di root untuk link cepat
+          cat > public/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <title>TEUKU_zikri Slides</title>
+          </head>
+          <body>
+            <h1>TEUKU_zikri Slidev Collections</h1>
+            <ul>
+              <li><a href="./Algo1/">Algo1 Slide</a></li>
+              <li><a href="./Algo2/">Algo2 Slide</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: ./Algo2/algo2-slidev/dist
+          publish_dir: ./public
           publish_branch: gh-pages
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
