@@ -22,6 +22,7 @@ jobs:
         working-directory: ./Algo1/algo1-slidev
         run: |
           npm install
+          npm install -D playwright-chromium
           npm run build -- --base /TEUKU_zikri/Algo1/
 
       # Build Algo2 Slidev
@@ -29,6 +30,7 @@ jobs:
         working-directory: ./Algo2/algo2-slidev
         run: |
           npm install
+          npm install -D playwright-chromium
           npm run build -- --base /TEUKU_zikri/Algo2/
 
       # Gabungkan output ke folder publik untuk gh-pages
