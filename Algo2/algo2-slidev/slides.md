@@ -1,7 +1,6 @@
 ---
 title: R-Tree実装発表 — Team B
 theme: seriph
-download: true
 colorSchema: auto
 fonts:
   sans: 'Inter'

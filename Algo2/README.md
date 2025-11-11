@@ -106,3 +106,24 @@ In summary, the R-tree plays a key role in improving **search efficiency for spa
 * Supporting dynamic insertion and deletion of multi-dimensional data
 
 This structure has become the foundation of modern spatial database systems, GIS engines, and any applications requiring fast search over multi-dimensional or geometric data.
+
+
+# Implementation
+I plan to implement an R-tree for the robot’s behavior.
+In this case, I represent it using Pygame, where the robot (blue box) must go to the target (green dot) while avoiding obstacles (red boxes). Each time a target is reached, a new target will appear.
+
+![alt text](image.png)
+
+However, there is a problem: sometimes in `robot_1.py`, the target appears too close to an obstacle or even right inside an obstacle, making it impossible to reach and causing the program to get stuck (a bug).
+
+![alt text](image1.png)
+
+I apply the R-tree algorithm in `robot_2.py` to detect whether there are nearby obstacles before setting a new movement target, so now the target will always be possible to reach.
+
+![alt text](image2.png)
+
+But there is another issue: when obstacles are generated, sometimes they are too close to each other, making the map less interesting. Some areas are too crowded while others are too empty. I want to make them more spread out, so I apply an R-tree in `robot_3.py` to detect nearby obstacles before generating a new one. As a result, the map is more interesting and looks like this:
+
+![alt text](image3.png)
+
+In summary, starting from a naive baseline, adding an R-tree first ensures targets are always reachable and then helps distribute obstacles more evenly. This simple spatial index makes queries faster and the simulation more robust.
