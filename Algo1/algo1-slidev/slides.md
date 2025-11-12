@@ -43,13 +43,7 @@ h1, h2, h3 {
 ## on Language Learning Process
 
 <div class="mt-8">
-  <p class="text-3xl mb-6">TEAM B</p>
-  <p class="text-xl">筒井夏輝</p>
-  <p class="text-xl">佐々木悠介</p>
   <p class="text-xl">Teuku Zikri Fatahillah</p>
-  <p class="text-xl">Rawich Piboonsin</p>
-  <p class="text-xl">河野拓斗</p>
-  <p class="text-xl">小俣俊輔</p>
 </div>
 
 <div @click="$slidev.nav.next" class="mt-12 py-1 cursor-pointer" hover="bg-white op-10">
@@ -222,7 +216,6 @@ class: text-center
 
 <div class="mt-12">
   <p class="text-4xl mb-8">ありがとうございました</p>
-  <p class="text-2xl opacity-80">TEAM B</p>
 </div>
 
 <div class="mt-16 text-sm opacity-60">
