@@ -1,224 +1,167 @@
 ---
-theme: seriph
-background: https://cover.sli.dev
-title: Misra–Gries Algorithm (Heavy Hitters in Streams)
-info: |
-  Streaming frequency estimation with bounded memory.
+theme: default
+background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)
+title: Misra–Gries Algorithm Implementation
 class: text-center
 transition: slide-left
 mdc: true
 duration: 30min
 drawings:
   persist: false
+colorSchema: light
+highlighter: shiki
 ---
 
-# Misra–Gries Algorithm 実装発表
+<style>
+:root {
+  --slidev-theme-primary: #e91e63;
+  --slidev-theme-accents-pink: #f48fb1;
+  --slidev-theme-accents-purple: #ba68c8;
+  --slidev-theme-accents-blue: #90caf9;
+}
 
-<div class="mt-10">
-  <p class="text-2xl mb-6">チームB</p>
-  <p class="text-xl">Teuku Zikri Fatahillah · Rawich Piboonsin · 河野拓斗</p>
-  <p class="text-md opacity-70 mt-4">Goal: Find elements with frequency > n/k using only O(k) memory.</p>
+.slidev-layout {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 50%, #fce4ec 100%);
+}
+
+h1, h2, h3 {
+  background: linear-gradient(135deg, #667eea 0%, #e91e63 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.slidev-code {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 2px solid #f48fb1;
+  border-radius: 8px;
+}
+</style>
+
+## Implementation of
+## Misra–Gries Algorithm
+## on Language Learning Process
+
+<div class="mt-8">
+  <p class="text-3xl mb-6">TEAM B</p>
+  <p class="text-xl">筒井夏輝</p>
+  <p class="text-xl">佐々木悠介</p>
+  <p class="text-xl">Teuku Zikri Fatahillah</p>
+  <p class="text-xl">Rawich Piboonsin</p>
+  <p class="text-xl">河野拓斗</p>
+  <p class="text-xl">小俣俊輔</p>
 </div>
 
 <div @click="$slidev.nav.next" class="mt-12 py-1 cursor-pointer" hover="bg-white op-10">
   Press Space to start <carbon:arrow-right />
 </div>
 
----
-layout: two-cols
----
-
-# Outline
-
-1. Problem Definition
-2. Use Cases & Motivation
-3. Core Idea
-4. Algorithm Steps
-5. Example Walkthrough
-6. Correctness & Guarantees
-7. Complexity & Space
-8. Comparison (Boyer–Moore, Count-Min Sketch)
-9. Implementation Notes
-10. Edge Cases & Pitfalls
-11. Extensions
-12. Demo & Code
-13. References
-
-::right::
-<Toc minDepth="1" maxDepth="2" />
 
 ---
 
-# Problem Definition
+# Introduction:
 
-Given a stream of n items (can’t store all), and a threshold parameter k (>1), report all items whose true frequency f(x) > n/k.
+Team B has many international members. It's like 40% of our group.
 
-Requirements:
+The biggest issue we face is language barriers.
 
-- Single pass over data (streaming)  
-- Sublinear memory (O(k))  
-- Return candidate set superset of real heavy hitters  
-- Provide upper & lower bounds on counts after verification pass (optional)
-
-Terminology: “Heavy hitter” / “frequent element” / “majority (for k=2)”
+Maybe we can use knowledge we got in this course to solve our problem.
 
 ---
 
-# Motivation / Use Cases
+# Problem when learning new Language:
 
-- Network traffic monitoring (top source IPs)
-- Log analytics (frequent error codes)
-- Sensor streams (dominant events)
-- E-commerce (popular products in clickstream)
-- Security anomaly detection (suspicious repeated access)
+• Memorizing new vocabulary is time-consuming and involves a large volume of words
 
-Why not exact counting? Too much memory for large domain. Misra–Gries trades a tiny approximation for drastic memory savings.
+• It is more efficient to start with the vocabulary that appears most frequently (in real-world context).
 
 ---
 
-# Core Idea (Intuition)
+# The Idea
 
-Maintain at most (k-1) counters. When a new item arrives:
-
-1. If its counter exists, increment.
-2. Else if less than k-1 counters, allocate one (count=1).
-3. Else decrement all counters by 1 and delete those that hit 0.
-
-Rationale: A true heavy hitter occurs so often it survives global decrements.
+We apply course techniques (Algorithm 3.1) to extract frequently used vocabulary from real-world videos, helping learners prioritize what to memorize
 
 ---
 
-# Algorithm (Pseudo-code)
+# How to do it?
+
+```mermaid
+flowchart LR
+    A[VLOG] --> B[Whisper<br/>Audio to Text]
+    B --> C[Fugashi<br/>Sentence to<br/>Word<br/>separator]
+    C --> D[Algorithm 3.1]
+    D --> E[Filter Word]
+    E --> F[List<br/>Vocabulary<br/>with Priority]
+```
+
+---
+
+# Whisper output:
+
+1. 00:00:00,000 --> 00:00:03,800  
+   みなさんこんにちは、あかねです。
+2. 00:00:03,800 --> 00:00:07,320  
+   これは1月に撮影した動画です。
+3. 00:00:07,320 --> 00:00:10,520  
+   私は今3つの仕事をしています。
+4. 00:00:10,520 --> 00:00:16,880  
+   そのうちの1つは東京にある日本語学校で日本語を教える仕事です。
+5. 00:00:16,880 --> 00:00:24,680  
+   今日の動画は仕事が終わった後、2年ぶりに友達に会って一緒に遊んだ日のVlogです。
+
+---
+
+# Tokenization
+
+<style scoped>
+.slidev-code { font-size: 0.45em !important; line-height: 1.3 !important; }
+h1 { margin-bottom: 0.5rem !important; }
+</style>
+
+```python {lines:true}
+def tokenize_with_fugashi(text):
+    tagger = Tagger()
+    tokens = []
+    pos_list = []
+    for tok in tagger(text):
+        # try to get a lemma/base form safely; many dicts expose 'lemma' or 原形
+        base = None
+        try:
+            feat = tok.feature
+            if isinstance(feat, dict):
+                base = feat.get("lemma") or feat.get("原形") or feat.get("基本形")
+            elif isinstance(feat, (list, tuple)) and len(feat) > 7:
+                # some dictionaries put base form at index 7
+                base = feat[7] or None
+        except Exception:
+            base = None
+        token_text = base or getattr(tok, "normalized", None) or tok.surface
+        # determine coarse POS string if available
+        pos = None
+        try:
+            if hasattr(tok, "pos"):
+                pos = tok.pos
+            else:
+                feat = tok.feature
+                if isinstance(feat, dict):
+                    pos = feat.get("pos") or feat.get("品詞")
+                elif isinstance(feat, (list, tuple)) and len(feat) > 0:
+                    pos = feat[0]
+        except Exception:
+            pos = None
+        tokens.append(token_text)
+        pos_list.append(pos or "")
+    return tokens, pos_list
+```
+
+---
+
+# Algorithm (Misra-Gries)
 
 ```python {lines:true}
 def misra_gries(stream, k):
-    counters = {}  # value -> count
-    for x in stream:
-        if x in counters:
-            counters[x] += 1
-        elif len(counters) < k - 1:
-            counters[x] = 1
-        else:
-            # decrement all
-            remove = []
-            for v in counters:
-                counters[v] -= 1
-                if counters[v] == 0:
-                    remove.append(v)
-            for v in remove:
-                del counters[v]
-    # Optional second pass to get exact counts for candidates
-    return counters
-```
-
-Guarantee: Any element with frequency > n/k will appear in counters at end.
-
----
-
-# Example Walkthrough
-
-Stream:  [A, B, C, A, B, A, D, A, B, A, B, B]  (n = 12, k = 4 ⇒ threshold n/k = 3)
-
-| Step | Item | Action | Counters |
-|------|------|--------|----------|
-| 1 | A | add | A:1 |
-| 2 | B | add | A:1 B:1 |
-| 3 | C | add | A:1 B:1 C:1 |
-| 4 | A | inc | A:2 B:1 C:1 |
-| 5 | B | inc | A:2 B:2 C:1 |
-| 6 | A | inc | A:3 B:2 C:1 |
-| 7 | D | full → decrement all | A:2 B:1 C:0 → remove C | A:2 B:1 |
-| 8 | A | inc | A:3 B:1 |
-| 9 | B | inc | A:3 B:2 |
-|10 | A | inc | A:4 B:2 |
-|11 | B | inc | A:4 B:3 |
-|12 | B | inc | A:4 B:4 |
-
-True frequencies: A=5, B=6, C=1, D=1. Heavy hitters (n/k=3): A,B preserved.
-
----
-
-# Correctness & Error Bounds
-
-Let f(x) be true frequency, c(x) final counter.
-
-Properties:
-
-- If f(x) > n/k ⇒ x in counters.
-- For any candidate x: f(x) ≥ c(x).
-- For any item x (candidate or not): f(x) - c(x) ≤ n/(k-1).
-
-Thus we may have false positives, but never miss true heavy hitters.
-
-Sketch: Each decrement phase conceptually removes k distinct items; a real heavy hitter cannot be removed enough times to vanish.
-
----
-
-# Complexity
-
-- Time: O(n * k) naive due to decrement loop of size ≤ k-1 each time.  
-  Optimization: store counters in array / dictionary; cost amortized ⇒ O(nk) worst-case, typically near O(n).
-- Space: O(k)
-- Passes: 1 (+ optional 2nd pass to get exact counts for remaining candidates)
-
-Comparison memory (domain size d):
-
-| Method | Memory | Guarantee |
-|--------|--------|-----------|
-| Exact Hash | O(d) | Exact |
-| Misra–Gries | O(k) | No false negatives |
-| Count-Min Sketch | O(k log 1/δ) | Probabilistic bounds |
-
----
-
-# Comparison with Others
-
-| Algorithm | Purpose | Memory | Error Type |
-|-----------|--------|--------|-----------|
-| Boyer–Moore | Majority (> n/2) | O(1) | Only majority | 
-| Misra–Gries | All > n/k | O(k) | False positives | 
-| Count-Min Sketch | Frequency approx | O(1/ε log 1/δ) | Overestimates | 
-| Space-Saving | Top-K frequent | O(k) | Approx counts |
-
-Misra–Gries generalizes Boyer–Moore (k=2).
-
----
-
-# Implementation Notes
-
-- Use dictionary (value → count) for generic data types.
-- For high-volume numeric IDs, arrays with indirection can reduce overhead.
-- Decrement loop cost: For large k, consider batching or alternative algorithms (Space-Saving) for speed.
-- After first pass, run second pass counting only candidates for exact frequencies.
-- Parallel streams: merge by summing counters then re-running reduction phase.
-
----
-
-# Edge Cases & Pitfalls
-
-- k ≤ 1: invalid (threshold ≥ n) → no heavy hitters conceptually.
-- All distinct elements: counters churn; final candidates ≤ k-1 but none exceed threshold.
-- Extremely skewed: one element dominates; algorithm behaves like majority vote.
-- Non-hashable objects: need custom key extraction.
-- Data with deletions: Misra–Gries assumes append-only streams; handle deletions via differential logs.
-
----
-
-# Extensions
-
-- Track approximate counts for all items using combination with Count-Min Sketch (hybrid).
-- Sliding windows: use exponential histograms / bucketization.
-- Distributed streaming: run locally then merge counters; verify with second pass on sampled union.
-- Weighted items: decrement by weight; requires careful normalization.
-
----
-
-# Demo (Python)
-
-```python {monaco-run}
-from collections import Counter
-
-def misra_gries(stream, k):
+    if k <= 1:
+        raise ValueError("k must be > 1")
     counters = {}
     for x in stream:
         if x in counters:
@@ -226,60 +169,38 @@ def misra_gries(stream, k):
         elif len(counters) < k - 1:
             counters[x] = 1
         else:
-            remove = []
-            for v in list(counters.keys()):
-                counters[v] -= 1
-                if counters[v] == 0:
-                    remove.append(v)
-            for v in remove:
-                del counters[v]
+            # decrement all
+            remove_keys = []
+            for y in list(counters.keys()):
+                counters[y] -= 1
+                if counters[y] == 0:
+                    remove_keys.append(y)
+            for y in remove_keys:
+                del counters[y]
     return counters
-
-data = list("ABCA B A D A B A B B".replace(" ",""))
-k = 4
-approx = misra_gries(data, k)
-true = Counter(data)
-print("Candidates:", approx)
-print("True counts:", true)
-print("Heavy hitters (threshold n/k):", [x for x,c in true.items() if c > len(data)/k])
 ```
 
----
-
-# Visualization (Mermaid)
-
-```mermaid
-flowchart LR
-    Start((Stream Item)) --> Check{Counter exists?}
-    Check -->|Yes| Inc[Increment counter]
-    Check -->|No| Room{Room < k-1?}
-    Room -->|Yes| Add[Add counter =1]
-    Room -->|No| Dec[Decrement all counters]
-    Dec --> Cleanup[Remove zeros]
-    Inc --> Next((Next Item))
-    Add --> Next
-    Cleanup --> Next
-    Next --> Start
-```
+Guarantee: Any element with frequency > n/k will appear in counters at end.
 
 ---
 
-# Mathematical Bound (LaTeX)
+# Result
 
-For any item x:
+After applying the Misra-Gries algorithm to the video transcript, we get a prioritized list of frequently used vocabulary words. This helps language learners focus on the most common words first.
 
-$$ f(x) - c(x) \le \frac{n}{k-1} $$
-
-If \( f(x) > \frac{n}{k} \Rightarrow x \) survives all decrements.
+<div class="flex justify-center items-center h-80">
+  <img src="/images/image-1.png" class="max-h-full object-contain" />
+</div>
 
 ---
 
-# References
+# What's Next?
 
-- Misra, Jayadev; Gries, David (1982). "Finding repeated elements". 
-- Manku & Motwani (Approximate Frequency Counts over Data Streams).
-- Cormode & Muthukrishnan (Count-Min Sketch).
-- Boyer & Moore (Majority Vote Algorithm).
+• After learning, user marks words as "mastered" (added to filters.txt file).
+
+• Future runs skip those tokens, focusing on remaining vocabulary.
+
+• This creates a personalized, evolving curriculum derived from real-world content.
 
 ---
 layout: center
@@ -297,12 +218,13 @@ layout: center
 class: text-center
 ---
 
-# Backup Slide: Second Pass Code
+# Thank You!
 
-```python
-from collections import Counter
-true_counts = Counter(data)
-verified = {x:true_counts[x] for x in approx}
-```
+<div class="mt-12">
+  <p class="text-4xl mb-8">ありがとうございました</p>
+  <p class="text-2xl opacity-80">TEAM B</p>
+</div>
 
-<PoweredBySlidev mt-10 />
+<div class="mt-16 text-sm opacity-60">
+  Misra–Gries Algorithm Implementation for Language Learning
+</div>

@@ -1,0 +1,19 @@
+[fillers]
+はい
+えー
+うん
+
+[stopwords]
+の
+に
+が
+を
+は
+です
+ます
+
+[pos_blacklist]
+# (tidak digunakan oleh regex fallback, tapi berguna jika kamu pakai tokenisasi morfologi)
+助詞
+感動詞
+記号

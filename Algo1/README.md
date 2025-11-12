@@ -3,7 +3,8 @@
 **date:** 10 october 2025
 
 
-slides:
+slides about implementation can be find here:
+
 https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo1
 
 ## Overview
@@ -36,3 +37,6 @@ the execution result can be seen below.
 
 
 ![execution result](image_1.png)
+
+
+the elaboration about explanation miesra-gries is inside `algo1.ipynb` file
