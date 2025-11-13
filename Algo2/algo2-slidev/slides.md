@@ -8,8 +8,26 @@ transition: slide-left
 mdc: true
 ---
 
-<!-- ===== Cover ===== -->
 <style>
+/* Noragami inspired divine theme */
+:root {
+  --noragami-blue: #4169E1;
+  --noragami-purple: #7B68EE;
+  --noragami-white: #F0F8FF;
+  --noragami-gold: #FFD700;
+}
+
+.dark {
+  --bg-primary: linear-gradient(135deg, #1a1f3a 0%, #2d1b4e 100%);
+  --text-glow: rgba(65, 105, 225, 0.6);
+}
+
+.light {
+  --bg-primary: linear-gradient(135deg, #e6f2ff 0%, #f0f0ff 100%);
+  --text-glow: rgba(65, 105, 225, 0.3);
+}
+
+/* Divine cover page */
 .cover {
   height: 100vh;
   display: flex;
@@ -18,31 +36,156 @@ mdc: true
   align-items: center;
   text-align: center;
   gap: 2rem;
-  background: #000;
-  color: #fff;
+  position: relative;
+  overflow: hidden;
 }
-.big   { 
-  font-size: 16vh; 
-  font-weight: 900; 
+
+.dark .cover {
+  background: linear-gradient(135deg, #1a1f3a 0%, #2d1b4e 50%, #1a1f3a 100%);
+  color: #F0F8FF;
+}
+
+.light .cover {
+  background: linear-gradient(135deg, #e6f2ff 0%, #f0f0ff 50%, #e6f2ff 100%);
+  color: #1a1f3a;
+}
+
+/* Floating divine particles effect */
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(65, 105, 225, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(123, 104, 238, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+  animation: divineFloat 12s ease-in-out infinite;
+}
+
+@keyframes divineFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-20px) scale(1.05); opacity: 0.8; }
+}
+
+/* Spiritual glow title */
+.big {
+  font-size: 6vh;
+  font-weight: 900;
+  background: linear-gradient(135deg, #4169E1 0%, #7B68EE 50%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
   letter-spacing: 0.05em;
-  line-height: 1.1;
-  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 30px rgba(65, 105, 225, 0.5));
+  animation: titleGlow 3s ease-in-out infinite;
 }
-.team  { 
-  font-size: 4vh; 
-  font-weight: 600; 
+
+@keyframes titleGlow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(65, 105, 225, 0.4)); }
+  50% { filter: drop-shadow(0 0 40px rgba(65, 105, 225, 0.7)); }
+}
+
+.team {
+  font-size: 4vh;
+  font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(90deg, #4169E1, #7B68EE);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.2em;
 }
-.names { 
-  font-size: 2.8vh; 
-  line-height: 1.8;
+
+.names {
+  font-size: 2.6vh;
+  line-height: 2;
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* Divine gradient headings */
+h1, h2, h3 {
+  background: linear-gradient(135deg, #4169E1 0%, #7B68EE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  position: relative;
+}
+
+h1::after, h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #4169E1, #7B68EE, transparent);
+  border-radius: 2px;
+}
+
+/* Ethereal code blocks */
+.slidev-code-wrapper {
+  border-radius: 8px !important;
+  border: 2px solid rgba(65, 105, 225, 0.3) !important;
+  background: rgba(240, 248, 255, 0.05) !important;
+  box-shadow: 
+    0 4px 16px rgba(65, 105, 225, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Mystical images */
+img {
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 24px rgba(65, 105, 225, 0.2),
+    0 0 0 1px rgba(65, 105, 225, 0.1);
+  border: 2px solid rgba(65, 105, 225, 0.2);
+}
+
+/* Divine bullet points */
+ul li::marker {
+  color: #4169E1;
+  font-weight: bold;
+}
+
+/* Sacred table styling */
+table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(65, 105, 225, 0.15);
+}
+
+table th {
+  background: linear-gradient(135deg, #4169E1, #7B68EE);
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem;
+}
+
+table td {
+  border-bottom: 1px solid rgba(65, 105, 225, 0.1);
+  padding: 0.75rem;
+}
+
+/* Smooth divine transitions */
+* {
+  transition: all 0.3s ease;
 }
 </style>
 
 <div class="cover">
-  <div class="big" style="font-size: 5vh; font-weight: 900; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.5rem;">R-Tree実装発表</div>
-  <div class="team">チームB</div>
+  <div class="big">R-Tree実装発表</div>
+  <div class="team">TEAM B</div>
   <div class="names">
     筒井夏輝<br/>
     佐々木悠介<br/>
@@ -61,9 +204,12 @@ mdc: true
 - 各ノードが**最小外接矩形（MBR）**で表される
 - 主に**範囲検索**、**交差判定**、**最近傍探索**に利用される
 
-<br>
+<div style="margin-top: 1rem; margin-bottom: 0.5rem;">
 
 ## 【メリット】
+
+</div>
+
 - 大量の空間データを**階層的に整理**可能
 - **範囲・交差検索**を効率的に処理できる
 
@@ -163,38 +309,49 @@ def search(node: Node, query: Rect):
 ---
 
 # ノードの分割・追加処理
+<br>
+<div style="margin-top: 1rem; margin-bottom: 0.5rem;">
 
 ## Linear-Cost Algorithm（線形コスト分割アルゴリズム）
+
+</div>
+
 
 - 軸方向でもっとも**離れた矩形ペア**を選択
 - シンプルで高速
 
-<br>
+<div style="margin-top: 1.5rem; margin-bottom: 1.0rem;">
 
 ## パラメータ設定
-|     |                                                              |
-|-----|--------------------------------------------------------------|
-| M=6 | 各ノードが保持できる最大エントリ数。7件目を挿入すると分割が発生 |
-| m=3 | 各ノードが保持できる最小エントリ数。各ノードは最低3件を保持 |
+
+</div>
+
+<table style="width: 100%; border-collapse: collapse;">
+  <tr>
+    <td style="border: 1px solid rgba(65, 105, 225, 0.3); padding: 0.75rem; font-weight: 900; color: #4169E1; width: 15%;">M=6</td>
+    <td style="border: 1px solid rgba(65, 105, 225, 0.3); padding: 0.75rem;">各ノードが保持できる最大エントリ数。7件目を挿入すると分割が発生</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid rgba(65, 105, 225, 0.3); padding: 0.75rem; font-weight: 900; color: #4169E1;">m=3</td>
+    <td style="border: 1px solid rgba(65, 105, 225, 0.3); padding: 0.75rem;">各ノードが保持できる最小エントリ数。各ノードは最低3件を保持</td>
+  </tr>
+</table>
 
 ---
 
-## 追加、線形コスト分割アルゴリズムの可視化
+# 追加、線形コスト分割アルゴリズムの可視化
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
 
 <div>
 
-### 動作の流れ
-
-1. 30個のランダム矩形を作成  
-2. 各矩形を1つずつ挿入  
-3. R-tree構造を更新
-
-### 特徴
-
-- M=&にすることで、分割を頻繁化
-- 計算量が少なく、リアルタイム描写に最適
+- 動作の流れ
+  1. 30個のランダム矩形を作成  
+  2. 各矩形を1つずつ挿入  
+  3. R-tree構造を更新
+- 特徴
+  - M=&にすることで、分割を頻繁化
+  - 計算量が少なく、リアルタイム描写に最適
 
 </div>
 
@@ -228,12 +385,16 @@ class: text-center
 
 ---
 
-## 実装概要
+# 実装概要
 
-- **Flickr** から投稿データの取得  
-- 地図平面上で投稿を**クラスタリング**  
-- **R-tree** の作成  
+- **Flickr** から投稿データの取得 
+  - flickrapi 
+- 地図平面上で投稿を**クラスタリング**
+  - sklearn
+- **R-tree** の作成
+  - rtree
 - **Webアプリ** の作成
+  - fastapi, leaflet(js)
 
 ---
 
@@ -243,12 +404,18 @@ class: text-center
 
 <div>
 
-pythonのライブラリ flickrapi を用いて取得
+flickrapiから取得できる項目
 
 - タイトル
 - タグ
 - 緯度経度
 - 画像url など
+
+取得内容
+
+- ヨーロッパ全域
+- 2024年1月1日から1年分
+- 505,946投稿
 
 </div>
 
@@ -272,6 +439,7 @@ pythonのライブラリ flickrapi を用いて取得
 - パラメータ（適当）
   - eps = 30 [m]
   - min_samples = 8
+- クラスタ数は8306
 
 </div>
 
@@ -304,32 +472,21 @@ pythonのライブラリ flickrapi を用いて取得
 
 # webアプリの作成
 
-デモは録画じゃなく実際に動かしたほうが面白そう
+<img src="/images/image7.png" alt="Web application map" style="width: 100%; height: auto;" />
 
 ---
 
 # 評価
-
-線形探索と比べてどれくらい早いのか検証
-
-そもそもクラスタ数がそんなに多くないのでそこまで早くなるのかは怪しい
-
-（全探索モードとR-treeモードで分けて実装して検索時間とかをどこかに表示してもいい）
-
-全世界的に行ったら目に見えて早いかも（めんどくさいのでやりたくない）
-
----
-
-# まとめ
-
-個人の実装
-
 <br>
-<br>
+R-Treeのほうが圧倒的に早い
 
-チームの実装
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+<img src="/images/image8.png" alt="R-Tree mode evaluation" style="width: 100%; height: auto;" />
+<img src="/images/image9.png" alt="Linear search mode evaluation" style="width: 100%; height: auto;" />
+</div>
 
 ---
 
 # Thank you
+<br>
 質問はありますか？
