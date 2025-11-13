@@ -5,7 +5,7 @@
 
 slides about implementation can be find here:
 
-https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo1
+https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo1/
 
 ## Overview
 

@@ -1,7 +1,7 @@
 # Report
 
 slides:
-https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo2
+https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo2/
 
 **R-tree: A Dynamic Index Structure for Spatial Searching**
 by Antonin Guttman and Michael Stonebraker
