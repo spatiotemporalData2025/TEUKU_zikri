@@ -16,20 +16,17 @@ mdc: true
   --noragami-white: #F0F8FF;
   --noragami-gold: #FFD700;
 }
-
 .dark {
   --bg-primary: linear-gradient(135deg, #1a1f3a 0%, #2d1b4e 100%);
   --text-glow: rgba(65, 105, 225, 0.6);
 }
-
 .light {
   --bg-primary: linear-gradient(135deg, #e6f2ff 0%, #f0f0ff 100%);
   --text-glow: rgba(65, 105, 225, 0.3);
 }
-
-/* Divine cover page */
 .cover {
-  height: 100vh;
+  height: 50vh;
+  padding: 0 !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -37,18 +34,29 @@ mdc: true
   text-align: center;
   gap: 2rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible;   /* penting untuk neon shadow */
+  padding-bottom: 50vh;
 }
-
 .dark .cover {
-  background: linear-gradient(135deg, #1a1f3a 0%, #2d1b4e 50%, #1a1f3a 100%);
   color: #F0F8FF;
+
+  background:
+    radial-gradient(circle at 50% 25%, rgba(120,160,255,0.28), transparent 70%),
+    radial-gradient(circle at 85% 70%, rgba(255,200,40,0.22), transparent 75%),
+    radial-gradient(circle at 15% 80%, rgba(140,80,255,0.25), transparent 70%),
+    linear-gradient(135deg, #05060c 0%, #0b0e18 45%, #06070d 100%);
 }
 
 .light .cover {
-  background: linear-gradient(135deg, #e6f2ff 0%, #f0f0ff 50%, #e6f2ff 100%);
   color: #1a1f3a;
+
+  background:
+    radial-gradient(circle at 50% 25%, rgba(120,150,255,0.35), transparent 70%),
+    radial-gradient(circle at 85% 70%, rgba(255,210,60,0.28), transparent 75%),
+    radial-gradient(circle at 15% 80%, rgba(160,120,255,0.32), transparent 70%),
+    linear-gradient(135deg, #e8ecff 0%, #d8dcff 45%, #eef0ff 100%);
 }
+
 
 /* Floating divine particles effect */
 .cover::before {
@@ -61,38 +69,70 @@ mdc: true
     radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
   animation: divineFloat 12s ease-in-out infinite;
 }
-
 @keyframes divineFloat {
   0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
   50% { transform: translateY(-20px) scale(1.05); opacity: 0.8; }
 }
 
-/* Spiritual glow title */
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  border-radius: 20px;
+
+  background:
+    radial-gradient(closest-side, rgba(120,150,255,0.6), transparent 80%) top left,
+    radial-gradient(closest-side, rgba(255,220,80,0.45), transparent 80%) top right,
+    radial-gradient(closest-side, rgba(150,80,255,0.45), transparent 80%) bottom left,
+    radial-gradient(closest-side, rgba(100,120,255,0.55), transparent 80%) bottom right;
+
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
+
+  filter: blur(40px);
+  opacity: 1;
+}
 .big {
-  font-size: 6vh;
+  font-size: 7vh;
   font-weight: 900;
   background: linear-gradient(135deg, #4169E1 0%, #7B68EE 50%, #FFD700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   position: relative;
   z-index: 1;
   letter-spacing: 0.05em;
   filter: drop-shadow(0 0 30px rgba(65, 105, 225, 0.5));
   animation: titleGlow 3s ease-in-out infinite;
+  text-align: center;
+  line-height: 1.1;
 }
-
 @keyframes titleGlow {
   0%, 100% { filter: drop-shadow(0 0 20px rgba(65, 105, 225, 0.4)); }
   50% { filter: drop-shadow(0 0 40px rgba(65, 105, 225, 0.7)); }
 }
 
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: inherit; /* pakai background cover */
+  border-radius: 20px;
+
+  filter: blur(40px) brightness(0.4);
+  transform: scale(1.06);
+  opacity: 0.9;
+}
 .team {
   font-size: 4vh;
   font-weight: 700;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
   position: relative;
   z-index: 1;
   background: linear-gradient(90deg, #4169E1, #7B68EE);
@@ -101,16 +141,15 @@ mdc: true
   background-clip: text;
   letter-spacing: 0.2em;
 }
-
 .names {
-  font-size: 2.6vh;
-  line-height: 2;
+  font-size: 2.2vh;
+  line-height: 1.8;
   position: relative;
   z-index: 1;
   opacity: 0.9;
   font-weight: 400;
+  max-width: 90%;
 }
-
 /* Divine gradient headings */
 h1, h2, h3 {
   background: linear-gradient(135deg, #4169E1 0%, #7B68EE 100%);
@@ -120,7 +159,6 @@ h1, h2, h3 {
   font-weight: 800;
   position: relative;
 }
-
 h1::after, h2::after {
   content: '';
   position: absolute;
@@ -131,8 +169,6 @@ h1::after, h2::after {
   background: linear-gradient(90deg, #4169E1, #7B68EE, transparent);
   border-radius: 2px;
 }
-
-/* Ethereal code blocks */
 .slidev-code-wrapper {
   border-radius: 8px !important;
   border: 2px solid rgba(65, 105, 225, 0.3) !important;
@@ -142,42 +178,37 @@ h1::after, h2::after {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
 }
-
-/* Mystical images */
 img {
   border-radius: 12px;
-  box-shadow: 
-    0 8px 24px rgba(65, 105, 225, 0.2),
-    0 0 0 1px rgba(65, 105, 225, 0.1);
-  border: 2px solid rgba(65, 105, 225, 0.2);
+  border: 2px solid rgba(140, 170, 255, 0.4);
+
+  box-shadow:
+    /* 0 0 7px rgba(140, 170, 255, 0.9),
+    0 0 10px rgba(160, 190, 255, 0.6), */
+    0 0 7px rgba(180, 210, 255, 0),
+    0 4px 12px rgba(70, 110, 255, 0.4);
 }
 
-/* Divine bullet points */
+
 ul li::marker {
   color: #4169E1;
   font-weight: bold;
 }
-
-/* Sacred table styling */
 table {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(65, 105, 225, 0.15);
 }
-
 table th {
   background: linear-gradient(135deg, #4169E1, #7B68EE);
   color: white;
   font-weight: 700;
   padding: 0.75rem;
 }
-
 table td {
   border-bottom: 1px solid rgba(65, 105, 225, 0.1);
   padding: 0.75rem;
 }
-
-/* Smooth divine transitions */
 * {
   transition: all 0.3s ease;
 }
@@ -186,18 +217,34 @@ table td {
 <div class="cover">
   <div class="big">R-Tree実装発表</div>
   <div class="team">TEAM B</div>
-  <div class="names">
-    筒井夏輝<br/>
-    佐々木悠介<br/>
-    小俣俊輔<br/>
-    Teuku Zikri Fatahillah<br/>
-    Rawich Piboonsin<br/>
-    河野拓斗
-  </div>
 </div>
 
 ---
+layout: center
+class: text-center
+---
 
+# TEAM B メンバー
+
+<div style="font-size: 1.8rem; line-height: 2.5; margin-top: 2rem;">
+
+筒井夏輝
+
+佐々木悠介
+
+小俣俊輔
+
+Teuku Zikri Fatahillah
+
+Rawich Piboonsin
+
+河野拓斗
+
+</div>
+
+---
+layout: two-cols
+---
 # R-Treeについて
 
 - 空間データを効率的に管理する**ツリー構造**
@@ -487,6 +534,94 @@ R-Treeのほうが圧倒的に早い
 
 ---
 
-# Thank you
-<br>
-質問はありますか？
+<style>
+.thanks-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* AUTO BACKGROUND */
+.dark .thanks-wrapper {
+  background: radial-gradient(circle at center,
+    rgba(0,0,0,1) 0%,
+    rgba(10,15,35,1) 45%,
+    rgba(20,25,55,1) 100%);
+}
+.light .thanks-wrapper {
+  background: radial-gradient(circle at center,
+    rgba(64, 99, 255, 1) 10%,
+    rgba(83, 114, 253, 1) 55%,
+    rgba(136, 158, 255, 1) 100%);
+}
+
+/* AURA GLOW (auto color) */
+.dark .thanks-wrapper::before,
+.light .thanks-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(120,150,255,0.4), transparent 70%),
+    radial-gradient(circle at 85% 80%, rgba(255,200,80,0.35), transparent 75%),
+    radial-gradient(circle at 15% 80%, rgba(150,80,255,0.35), transparent 75%);
+  filter: blur(55px);
+  opacity: 0.9;
+}
+
+/* MAIN TEXT */
+.thanks-title {
+  font-size: 9vh;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin: 0;
+
+  background: linear-gradient(135deg,
+    #e2ceceff,
+    #d5ddff 30%,
+    #88aaff 60%,
+    #ffd86b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 0 18px rgba(255,255,255,0.6),
+    0 0 30px rgba(140,160,255,0.4);
+}
+
+/* DARK MODE TEXT BOOSTER */
+.dark .thanks-title {
+  text-shadow:
+    0 0 22px rgba(255,255,255,0.45),
+    0 0 35px rgba(120,160,255,0.4),
+    0 0 55px rgba(255,200,80,0.25);
+}
+
+/* SUBTEXT */
+.thanks-sub {
+  margin-top: 1.5vh;
+  font-size: 2.8vh;
+  letter-spacing: 0.25em;
+  opacity: 0.85;
+}
+
+/* COLOR ADAPTATION */
+.dark .thanks-sub {
+  color: #dfe3ff;
+}
+.light .thanks-sub {
+  color: #26264a;
+}
+</style>
+
+<div class="thanks-wrapper">
+  <div>
+    <div class="thanks-title">Thank You</div>
+    <div class="thanks-sub">質問はありますか？</div>
+  </div>
+</div>
