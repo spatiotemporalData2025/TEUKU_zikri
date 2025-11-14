@@ -180,13 +180,13 @@ h1::after, h2::after {
 }
 img {
   border-radius: 12px;
-  border: 2px solid rgba(140, 170, 255, 0.4);
+  border: 2px solid rgba(140, 170, 255, 0.5);
 
   box-shadow:
-    /* 0 0 7px rgba(140, 170, 255, 0.9),
-    0 0 10px rgba(160, 190, 255, 0.6), */
-    0 0 7px rgba(180, 210, 255, 0),
-    0 4px 12px rgba(70, 110, 255, 0.4);
+    0 0 12px rgba(140, 170, 255, 0.8),
+    0 0 20px rgba(160, 190, 255, 0.5),
+    0 0 30px rgba(180, 210, 255, 0.3),
+    0 4px 16px rgba(70, 110, 255, 0.4);
 }
 
 
@@ -406,6 +406,11 @@ def search(node: Node, query: Rect):
 <img src="/gifs/gif3.gif" alt="Linear-cost split visualization" style="width: 100%; height: auto;" />
 </div>
 
+</div>
+---
+
+<div style="display: flex; justify-content: center;">
+<img src="/images/image10.png" alt="Additional visualization" style="width: 55%; height: auto;" />
 </div>
 
 ---
