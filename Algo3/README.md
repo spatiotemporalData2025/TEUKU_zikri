@@ -1,12 +1,13 @@
-Report on DBSCAN and Its Subsequent Developments
-1. Original DBSCAN (Ester et al., KDD 1996)
+# Report on DBSCAN and Its Subsequent Developments
 
-Citation
+## 1. Original DBSCAN (Ester et al., KDD 1996)
+
+### Citation
 Ester, M., Kriegel, H.-P., Sander, J., & Xu, X.
-“A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise.”
+"A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise."
 Proceedings of the 2nd International Conference on Knowledge Discovery and Data Mining (KDD), 1996, pp. 226–231.
 
-1.1 Motivation
+### 1.1 Motivation
 
 Classical clustering algorithms (k-means, k-medoids, hierarchical) show serious limitations for large spatial databases: they require the number of clusters k in advance, are biased toward convex cluster shapes, and often do not scale well to large datasets.
 
@@ -18,7 +19,7 @@ Arbitrary cluster shapes (not restricted to convex/spherical).
 
 Good efficiency on large spatial databases.
 
-1.2 Intuitive Idea
+### 1.2 Intuitive Idea
 
 Human observers can easily pick out clusters in scatter plots because cluster regions have higher point density than surrounding noise. DBSCAN formalizes this by defining clusters as connected dense regions separated by areas of low density.
 
@@ -28,13 +29,13 @@ Inside a cluster: many neighbors close to each point.
 
 Outside: density drops below a threshold → considered noise.
 
-1.3 Formal Definitions
+### 1.3 Formal Definitions
 
 Let 
 𝐷
 D be a set of points in a metric space with distance function dist(·,·).
 
-1.3.1 Eps-neighborhood
+#### 1.3.1 Eps-neighborhood
 
 For point 
 𝑝
@@ -82,7 +83,7 @@ Eps: search radius
 
 MinPts: minimum number of points required to form a dense region
 
-1.3.2 Core, Border, and Noise Points
+#### 1.3.2 Core, Border, and Noise Points
 
 Core point: 
 ∣
@@ -113,7 +114,7 @@ Noise point: neither core nor border.
 
 Figure 2 in the paper visually distinguishes core and border points.
 
-1.3.3 Density Reachability and Connectivity
+#### 1.3.3 Density Reachability and Connectivity
 
 Directly density-reachable:
 
@@ -226,7 +227,7 @@ o.
 
 Using these concepts, a cluster is defined as a maximal set of density-connected points (Definition 5), and noise as all points not belonging to any cluster (Definition 6).
 
-1.4 Algorithm Description
+### 1.4 Algorithm Description
 
 High-level procedure (Section 4):
 
@@ -274,21 +275,21 @@ Return success flag.
 
 Region queries are answered efficiently using an R*-tree index, yielding average time complexity O(n log n) for n points.
 
-1.5 Parameter Selection (Eps, MinPts)
+### 1.5 Parameter Selection (Eps, MinPts)
 
 DBSCAN needs only two parameters:
 
 MinPts: typically fixed (e.g., 4 for 2D).
 
-Eps: chosen interactively via the sorted k-distance graph: for each point, compute distance to its k-th neighbor (k = MinPts), sort these distances descending, and visually locate the first “valley” that separates noise from cluster points (Figure 4).
+Eps: chosen interactively via the sorted k-distance graph: for each point, compute distance to its k-th neighbor (k = MinPts), sort these distances descending, and visually locate the first "valley" that separates noise from cluster points (Figure 4).
 
-1.6 Performance Evaluation
+### 1.6 Performance Evaluation
 
 On synthetic datasets, DBSCAN correctly finds clusters of arbitrary shapes and detects noise, while CLARANS (k-medoid based) splits large clusters and cannot model nonconvex shapes well (Figures 5 and 6).
 
 On subsets of the SEQUOIA 2000 benchmark (up to ~12k points), DBSCAN is 250–1900× faster than CLARANS, with runtime slightly super-linear in n.
 
-1.7 Conceptual Diagram of DBSCAN
+### 1.7 Conceptual Diagram of DBSCAN
               (Cluster 1)                        (Cluster 2)
           o o o o o o o o o                    x x x x x x x
         o o o ● ● ● ● o o o                x x x ● ● ● ● x x x
@@ -304,20 +305,20 @@ o  border points
 
 DBSCAN grows each cluster by connecting core points and absorbing border points reachable within Eps, while leaving isolated points as noise.
 
-2. Evolution of DBSCAN: Major Subsequent Methods
+## 2. Evolution of DBSCAN: Major Subsequent Methods
 
 Below are important algorithms that evolved directly from DBSCAN, along with their bibliographic data and how they extend or generalize the original method.
 
-2.1 GDBSCAN – Generalized DBSCAN (1998)
+### 2.1 GDBSCAN – Generalized DBSCAN (1998)
 
-Citation
+#### Citation
 Sander, J., Ester, M., Kriegel, H.-P., & Xu, X.
 “Density-Based Clustering in Spatial Databases: The Algorithm GDBSCAN and Its Applications.”
 Data Mining and Knowledge Discovery, 2(2), 1998, pp. 169–194. 
 Springer
 +1
 
-2.1.1 Main Idea
+#### 2.1.1 Main Idea
 
 GDBSCAN generalizes DBSCAN in two key ways:
 
@@ -333,7 +334,7 @@ A general neighborhood predicate N(p, q) (e.g., polygon intersection, distance u
 
 A dense predicate on a set of objects (e.g., total area, attribute-based weight).
 
-2.1.2 Evolution from DBSCAN
+#### 2.1.2 Evolution from DBSCAN
 
 GDBSCAN keeps the same high-level mechanism:
 
@@ -355,16 +356,16 @@ flowchart LR
 
 This evolution makes DBSCAN applicable to richer GIS data (lines, polygons) and attribute-enhanced clustering.
 
-2.2 OPTICS – Ordering Points To Identify the Clustering Structure (1999)
+### 2.2 OPTICS – Ordering Points To Identify the Clustering Structure (1999)
 
-Citation
+#### Citation
 Ankerst, M., Breunig, M. M., Kriegel, H.-P., & Sander, J.
 “OPTICS: Ordering Points to Identify the Clustering Structure.”
 Proc. ACM SIGMOD Int. Conf. on Management of Data, 1999, pp. 49–60. 
 dbs.ifi.lmu.de
 +1
 
-2.2.1 Main Idea
+#### 2.2.1 Main Idea
 
 OPTICS addresses a central limitation of DBSCAN: using a single global Eps makes it difficult to handle datasets with clusters of varying density, and parameter tuning is tricky.
 ResearchGate
@@ -383,7 +384,7 @@ Extract clusters at many different density levels.
 
 Visualize the intrinsic cluster structure without choosing a single Eps.
 
-2.2.2 How OPTICS Evolves from DBSCAN
+#### 2.2.2 How OPTICS Evolves from DBSCAN
 
 OPTICS is a soft generalization of DBSCAN:
 
@@ -403,9 +404,9 @@ Diagram of relationship:
 flowchart TD
   A[DBSCAN<br/>single Eps<br/>single clustering] --> B[OPTICS<br/>varied Eps<br/>reachability plot]
 
-2.3 ST-DBSCAN – Spatio-Temporal DBSCAN (2007)
+### 2.3 ST-DBSCAN – Spatio-Temporal DBSCAN (2007)
 
-Citation
+#### Citation
 Birant, D., & Kut, A.
 “ST-DBSCAN: An Algorithm for Clustering Spatial–Temporal Data.”
 Data & Knowledge Engineering, 60(1), 2007, pp. 208–221. 
@@ -414,7 +415,7 @@ ScienceDirect
 ACM Digital Library
 +2
 
-2.3.1 Main Idea
+#### 2.3.1 Main Idea
 
 ST-DBSCAN extends DBSCAN to spatio-temporal data. It introduces three marginal extensions related to:
 Bohrium
@@ -428,7 +429,7 @@ How adjacent clusters are merged.
 
 It considers spatial proximity, temporal proximity, and non-spatial attributes, enabling discovery of clusters that are coherent in both space and time.
 
-2.3.2 Evolution from DBSCAN
+#### 2.3.2 Evolution from DBSCAN
 
 Compared to DBSCAN:
 
@@ -440,9 +441,9 @@ Introduces rules to merge nearby clusters whose temporal neighborhoods overlap.
 
 Thus ST-DBSCAN keeps the same core mechanism (density-based clustering with Eps/MinPts), but generalizes the feature space and modifies the neighborhood definition to incorporate temporal constraints.
 
-2.4 HDBSCAN – Hierarchical Density-Based Spatial Clustering of Applications with Noise (2013–2015, 2017 software)
+### 2.4 HDBSCAN – Hierarchical Density-Based Spatial Clustering of Applications with Noise (2013–2015, 2017 software)
 
-Core References
+#### Core References
 
 Campello, R. J. G. B., Moulavi, D., & Sander, J.
 “Density-Based Clustering Based on Hierarchical Density Estimates.”
@@ -460,7 +461,7 @@ Journal of Open Source Software, 2(11), 2017, Article 205.
 The Open Journal
 +1
 
-2.4.1 Main Idea
+#### 2.4.1 Main Idea
 
 HDBSCAN overcomes two major weaknesses of DBSCAN:
 
@@ -488,7 +489,7 @@ An automatic choice of a good flat clustering.
 
 Ability to find clusters of varying densities, more robust to parameter choice than DBSCAN.
 
-2.4.2 Evolution from DBSCAN
+#### 2.4.2 Evolution from DBSCAN
 
 Relationship to DBSCAN and OPTICS:
 arXiv
@@ -512,13 +513,14 @@ flowchart TD
   A[DBSCAN] --> B[OPTICS<br/>continuous density info]
   B --> C[HDBSCAN<br/>hierarchical + stability-based cluster selection]
 
-2.5 Later Variants and Ecosystem
-2.5.1 DBSCAN Revisited and DBSCAN*
+### 2.5 Later Variants and Ecosystem
+
+#### 2.5.1 DBSCAN Revisited and DBSCAN*
 
 Later work (e.g., “DBSCAN Revisited, Revisited” by Schubert et al.) clarifies theoretical aspects, parameter selection, and implementation details, and proposes DBSCAN* variants that adjust border handling while keeping the same density-based cluster semantics.
 Wikipedia
 
-2.5.2 Fast and Parallel DBSCAN / DBSCAN++
+#### 2.5.2 Fast and Parallel DBSCAN / DBSCAN++
 
 Numerous algorithms focus on:
 
@@ -528,9 +530,9 @@ Parallel and distributed DBSCAN, mapping region queries and cluster expansion to
 
 DBSCAN++ uses coresets and randomization to improve scalability further while approximating DBSCAN behavior.
 
-These works maintain DBSCAN’s abstract model but optimize the computational engine.
+These works maintain DBSCAN's abstract model but optimize the computational engine.
 
-3. Evolution Map
+## 3. Evolution Map
 
 Below is a simplified evolution “family tree”:
 
@@ -559,8 +561,9 @@ HDBSCAN: hierarchical, stability-based extraction.
 
 Fast/Parallel/DBSCAN++: engineering improvements for large-scale data.
 
-4. Overall Discussion
-4.1 What DBSCAN Contributed
+## 4. Overall Discussion
+
+### 4.1 What DBSCAN Contributed
 
 DBSCAN introduced a non-parametric, density-based view of clustering that:
 
@@ -572,27 +575,27 @@ Can be efficient on large datasets via spatial indices.
 
 These properties made it one of the most widely used clustering algorithms in data mining and spatial analytics.
 
-4.2 How Later Methods Evolved the Idea
+### 4.2 How Later Methods Evolved the Idea
 
-Generalization of “density” and “neighborhood”
+#### Generalization of "density" and "neighborhood"
 
 GDBSCAN and ST-DBSCAN extend the basic idea to richer object types and spatio-temporal constraints.
 
-Relaxation of global Eps / single-density assumption
+#### Relaxation of global Eps / single-density assumption
 
 OPTICS and HDBSCAN address the problem of varying cluster densities by exploring density over a range of scales and building hierarchies.
 
-Improved robustness and interpretability
+#### Improved robustness and interpretability
 
 HDBSCAN introduces stability-based selection, giving well-justified cluster choices.
 
 Revisited formulations clarify edge cases and provide better theoretical backing.
 
-Scalability
+#### Scalability
 
 Parallel and approximate DBSCAN variants ensure that the core idea remains practical for modern large-scale datasets.
 
-5. Conclusion
+## 5. Conclusion
 
 The original DBSCAN algorithm defined clusters as maximal sets of density-connected points and classified low-density regions as noise. This density-based viewpoint allowed it to outperform partitioning methods such as CLARANS both in accuracy and runtime on spatial databases.
 
@@ -606,7 +609,24 @@ Recent engineering variants have further improved efficiency and applicability.
 
 Together, these developments show how a single foundational idea—clustering by density connectivity—has evolved into a rich family of algorithms for complex, large, and high-dimensional data.
 
+---
 
+## 6. Visual Examples
 
-![alt text](image.png)
-![alt text](image-2.png)
+### 6.1 DBSCAN Pseudocode
+
+The following image shows the pseudocode implementation of the DBSCAN algorithm:
+
+![DBSCAN Pseudocode](image.png)
+
+### 6.2 Input Dataset
+
+Sample input dataset used for DBSCAN clustering demonstration:
+
+![Input Dataset](image-1.png)
+
+### 6.3 DBSCAN Clustering Results
+
+The clustering results after applying DBSCAN algorithm, showing identified clusters and noise points:
+
+![DBSCAN Results](image-2.png)
