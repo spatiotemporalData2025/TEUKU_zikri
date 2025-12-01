@@ -1,0 +1,66 @@
+accident_id,latitude,longitude,severity,date,time,road_type,light_conditions,weather_conditions
+A001,53.966461,-1.081413,2,2019-02-18,16:30,Single carriageway,Darkness,Rain
+A002,53.965924,-1.084724,1,2019-03-20,08:15,Roundabout,Daylight,Fine
+A003,53.956889,-1.086508,3,2019-06-07,22:45,Dual carriageway,Darkness,Fog
+A004,53.953979,-1.080580,2,2019-01-12,19:00,Single carriageway,Darkness,Rain
+A005,53.961046,-1.078212,1,2019-10-24,14:15,Roundabout,Daylight,Snow
+A006,53.959586,-1.081382,3,2019-04-08,04:45,Dual carriageway,Darkness,Fine
+A007,53.959945,-1.083183,2,2019-11-19,18:30,Single carriageway,Darkness,Rain
+A008,53.963199,-1.077959,1,2019-07-05,09:00,Roundabout,Daylight,Fine
+A009,53.957593,-1.078509,2,2019-09-16,17:15,Dual carriageway,Daylight,Rain
+A010,53.956792,-1.077034,3,2019-03-11,21:45,Single carriageway,Darkness,Fog
+A011,53.961322,-1.077932,1,2019-05-23,11:30,Roundabout,Daylight,Fine
+A012,53.959143,-1.084311,2,2019-08-14,15:00,Dual carriageway,Daylight,Rain
+A013,53.962508,-1.087603,3,2019-12-02,23:15,Single carriageway,Darkness,Snow
+A014,53.963266,-1.082807,1,2019-06-29,10:45,Roundabout,Daylight,Fine
+A015,53.956902,-1.079236,2,2019-01-27,19:30,Dual carriageway,Darkness,Rain
+A016,53.956829,-1.080568,1,2019-04-19,13:15,Single carriageway,Daylight,Fine
+A017,53.962545,-1.077890,3,2019-02-05,03:30,Roundabout,Darkness,Fog
+A018,53.960196,-1.079940,2,2019-09-03,18:15,Dual carriageway,Darkness,Rain
+A019,53.959492,-1.084297,1,2019-10-10,07:45,Single carriageway,Daylight,Fine
+A020,53.958608,-1.080951,2,2019-11-21,20:30,Roundabout,Darkness,Rain
+B001,53.981315,-1.097672,1,2019-03-06,09:00,Single carriageway,Daylight,Fine
+B002,53.978723,-1.100609,2,2019-05-18,17:45,Roundabout,Daylight,Rain
+B003,53.978999,-1.102598,3,2019-07-09,22:15,Dual carriageway,Darkness,Fog
+B004,53.976394,-1.100750,2,2019-02-11,18:00,Single carriageway,Darkness,Rain
+B005,53.983767,-1.100576,1,2019-04-03,11:15,Roundabout,Daylight,Fine
+B006,53.979748,-1.094306,2,2019-06-26,16:30,Dual carriageway,Daylight,Rain
+B007,53.980712,-1.096694,3,2019-08-19,21:45,Single carriageway,Darkness,Fog
+B008,53.984010,-1.100998,1,2019-10-08,10:00,Roundabout,Daylight,Fine
+B009,53.979783,-1.102973,2,2019-01-17,19:15,Dual carriageway,Darkness,Rain
+B010,53.975846,-1.101253,3,2019-03-30,23:00,Single carriageway,Darkness,Snow
+B011,53.982848,-1.096343,2,2019-07-21,15:30,Roundabout,Daylight,Rain
+B012,53.978925,-1.099842,1,2019-09-02,08:45,Dual carriageway,Daylight,Fine
+B013,53.981219,-1.105010,3,2019-11-11,20:45,Single carriageway,Darkness,Fog
+B014,53.980542,-1.099406,2,2019-12-05,18:15,Roundabout,Darkness,Rain
+B015,53.979117,-1.103727,1,2019-02-24,14:30,Dual carriageway,Daylight,Fine
+B016,53.977722,-1.099140,2,2019-04-14,17:00,Single carriageway,Daylight,Rain
+B017,53.982538,-1.101652,3,2019-06-01,22:30,Roundabout,Darkness,Fog
+B018,53.980166,-1.098171,2,2019-08-12,16:15,Dual carriageway,Daylight,Rain
+B019,53.978833,-1.101027,1,2019-10-27,09:15,Single carriageway,Daylight,Fine
+B020,53.982092,-1.104422,2,2019-12-18,19:45,Roundabout,Darkness,Rain
+C001,53.938697,-1.067897,1,2019-01-09,08:30,Single carriageway,Daylight,Fine
+C002,53.941194,-1.058419,2,2019-03-22,17:15,Roundabout,Daylight,Rain
+C003,53.939018,-1.063391,3,2019-05-05,21:30,Dual carriageway,Darkness,Fog
+C004,53.944029,-1.064604,2,2019-06-17,19:00,Single carriageway,Darkness,Rain
+C005,53.937129,-1.062026,1,2019-08-01,13:45,Roundabout,Daylight,Fine
+C006,53.944424,-1.061094,2,2019-09-19,16:15,Dual carriageway,Daylight,Rain
+C007,53.941380,-1.062039,3,2019-11-03,23:15,Single carriageway,Darkness,Fog
+C008,53.943503,-1.061946,1,2019-02-13,10:15,Roundabout,Daylight,Fine
+C009,53.940334,-1.058977,2,2019-04-27,18:45,Dual carriageway,Darkness,Rain
+C010,53.942323,-1.062922,3,2019-07-10,20:30,Single carriageway,Darkness,Rain
+C011,53.938862,-1.058523,1,2019-09-28,11:00,Roundabout,Daylight,Fine
+C012,53.939522,-1.065294,2,2019-12-09,15:45,Dual carriageway,Daylight,Rain
+C013,53.942747,-1.063696,3,2019-01-31,22:00,Single carriageway,Darkness,Snow
+C014,53.940126,-1.060114,2,2019-03-15,18:15,Roundabout,Darkness,Rain
+C015,53.941797,-1.057794,1,2019-05-29,09:30,Dual carriageway,Daylight,Fine
+N001,53.906215,-1.104525,2,2019-01-18,16:45,Single carriageway,Daylight,Rain
+N002,53.997543,-1.112407,1,2019-02-27,11:30,Roundabout,Daylight,Fine
+N003,53.924381,-1.021784,3,2019-04-06,21:15,Dual carriageway,Darkness,Fog
+N004,53.986472,-1.033297,2,2019-06-19,19:45,Single carriageway,Darkness,Rain
+N005,53.912837,-1.147392,1,2019-07-23,10:00,Roundabout,Daylight,Fine
+N006,53.990165,-1.061274,2,2019-09-07,18:30,Dual carriageway,Darkness,Rain
+N007,53.909274,-1.017593,3,2019-10-14,23:00,Single carriageway,Darkness,Snow
+N008,53.995803,-1.025961,2,2019-03-09,17:00,Roundabout,Daylight,Rain
+N009,53.915642,-1.107813,1,2019-05-12,08:45,Dual carriageway,Daylight,Fine
+N010,53.993410,-1.141250,2,2019-11-26,20:15,Single carriageway,Darkness,Rain
