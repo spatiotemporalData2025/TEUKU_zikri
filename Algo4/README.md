@@ -1,5 +1,9 @@
 # Spatio-Temporal Graphs (STG): A Unified Representation for Coupled Space–Time Dynamics
 
+
+slides:
+https://spatiotemporaldata2025.github.io/TEUKU_zikri/Algo4/
+
 **Repository type:** research-style educational implementation  
 **Artifacts:** two reproducible STG construction + visualization experiments (synthetic data)  
 **Language:** Python (NumPy, Matplotlib)
