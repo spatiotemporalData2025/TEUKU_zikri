@@ -1,0 +1,6 @@
+numpy
+matplotlib
+requests
+# Optional for real map tiles background:
+# contextily
+# xyzservices

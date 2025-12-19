@@ -1,0 +1,218 @@
+{
+  "last_updated": 1766100144,
+  "ttl": 0,
+  "data": {
+    "stations": [
+      {
+        "station_id": "1000",
+        "name": "Sample Station 00",
+        "lat": 40.738859931779984,
+        "lon": -74.0064235743468,
+        "capacity": 47
+      },
+      {
+        "station_id": "1001",
+        "name": "Sample Station 01",
+        "lat": 40.70579437083522,
+        "lon": -73.94608531372077,
+        "capacity": 19
+      },
+      {
+        "station_id": "1002",
+        "name": "Sample Station 02",
+        "lat": 40.743882670029514,
+        "lon": -74.01478009677027,
+        "capacity": 39
+      },
+      {
+        "station_id": "1003",
+        "name": "Sample Station 03",
+        "lat": 40.72576378170028,
+        "lon": -74.01226474896797,
+        "capacity": 31
+      },
+      {
+        "station_id": "1004",
+        "name": "Sample Station 04",
+        "lat": 40.70838265082896,
+        "lon": -74.01183582879905,
+        "capacity": 31
+      },
+      {
+        "station_id": "1005",
+        "name": "Sample Station 05",
+        "lat": 40.70709326072948,
+        "lon": -73.96910916752262,
+        "capacity": 23
+      },
+      {
+        "station_id": "1006",
+        "name": "Sample Station 06",
+        "lat": 40.775675109887814,
+        "lon": -73.96753027859856,
+        "capacity": 19
+      },
+      {
+        "station_id": "1007",
+        "name": "Sample Station 07",
+        "lat": 40.769252353834105,
+        "lon": -73.98429875728142,
+        "capacity": 23
+      },
+      {
+        "station_id": "1008",
+        "name": "Sample Station 08",
+        "lat": 40.70558992167413,
+        "lon": -73.94273783868562,
+        "capacity": 27
+      },
+      {
+        "station_id": "1009",
+        "name": "Sample Station 09",
+        "lat": 40.75029668522858,
+        "lon": -73.9713382703021,
+        "capacity": 39
+      },
+      {
+        "station_id": "1010",
+        "name": "Sample Station 10",
+        "lat": 40.737017818892234,
+        "lon": -73.94654862767919,
+        "capacity": 23
+      },
+      {
+        "station_id": "1011",
+        "name": "Sample Station 11",
+        "lat": 40.71236668549324,
+        "lon": -73.96859160477294,
+        "capacity": 23
+      },
+      {
+        "station_id": "1012",
+        "name": "Sample Station 12",
+        "lat": 40.74468770512709,
+        "lon": -73.97070299808614,
+        "capacity": 19
+      },
+      {
+        "station_id": "1013",
+        "name": "Sample Station 13",
+        "lat": 40.76772419517601,
+        "lon": -73.96428913661438,
+        "capacity": 31
+      },
+      {
+        "station_id": "1014",
+        "name": "Sample Station 14",
+        "lat": 40.781647996781814,
+        "lon": -73.98151669248975,
+        "capacity": 27
+      },
+      {
+        "station_id": "1015",
+        "name": "Sample Station 15",
+        "lat": 40.75587222390077,
+        "lon": -73.93689027547249,
+        "capacity": 27
+      },
+      {
+        "station_id": "1016",
+        "name": "Sample Station 16",
+        "lat": 40.73597203962365,
+        "lon": -73.94850584666297,
+        "capacity": 47
+      },
+      {
+        "station_id": "1017",
+        "name": "Sample Station 17",
+        "lat": 40.793579555670114,
+        "lon": -74.01263304902838,
+        "capacity": 27
+      },
+      {
+        "station_id": "1018",
+        "name": "Sample Station 18",
+        "lat": 40.76302358045738,
+        "lon": -73.94123762539839,
+        "capacity": 47
+      },
+      {
+        "station_id": "1019",
+        "name": "Sample Station 19",
+        "lat": 40.75386010285134,
+        "lon": -73.96519368828672,
+        "capacity": 19
+      },
+      {
+        "station_id": "1020",
+        "name": "Sample Station 20",
+        "lat": 40.714167893390595,
+        "lon": -73.98236894603933,
+        "capacity": 59
+      },
+      {
+        "station_id": "1021",
+        "name": "Sample Station 21",
+        "lat": 40.74104669673918,
+        "lon": -73.93600568090373,
+        "capacity": 31
+      },
+      {
+        "station_id": "1022",
+        "name": "Sample Station 22",
+        "lat": 40.704704870845696,
+        "lon": -73.95986057291191,
+        "capacity": 59
+      },
+      {
+        "station_id": "1023",
+        "name": "Sample Station 23",
+        "lat": 40.766969090318405,
+        "lon": -73.94898152456587,
+        "capacity": 59
+      },
+      {
+        "station_id": "1024",
+        "name": "Sample Station 24",
+        "lat": 40.73764970154178,
+        "lon": -73.95742341703537,
+        "capacity": 39
+      },
+      {
+        "station_id": "1025",
+        "name": "Sample Station 25",
+        "lat": 40.75960097543588,
+        "lon": -73.94827972217605,
+        "capacity": 19
+      },
+      {
+        "station_id": "1026",
+        "name": "Sample Station 26",
+        "lat": 40.80079613366151,
+        "lon": -73.93497870144029,
+        "capacity": 31
+      },
+      {
+        "station_id": "1027",
+        "name": "Sample Station 27",
+        "lat": 40.783645048139235,
+        "lon": -74.01415000218554,
+        "capacity": 47
+      },
+      {
+        "station_id": "1028",
+        "name": "Sample Station 28",
+        "lat": 40.78417904255653,
+        "lon": -73.9617584030925,
+        "capacity": 47
+      },
+      {
+        "station_id": "1029",
+        "name": "Sample Station 29",
+        "lat": 40.79863097439317,
+        "lon": -73.99438640211152,
+        "capacity": 31
+      }
+    ]
+  }
+}
