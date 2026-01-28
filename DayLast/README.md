@@ -1,13 +1,10 @@
 # Urban Activity Pulse Map - Final Project Web GIS Spatio-Temporal
 
-**Name**: [Your Name]  
-**Student ID**: [Your Student ID]  
-**Team**: Individual / [Other team members if any]  
-**Course**: Algorithms and Programming (Web GIS - Spatio-Temporal)  
-**Date**: January 2026
+slides about implementation can be find here:
+
+https://spatiotemporaldata2025.github.io/TEUKU_zikri/daylast-slidev
 
 ---
-
 ## System Description
 
 **Urban Activity Pulse Map** is a Web GIS application that displays spatio-temporal visualization of urban activity using:
