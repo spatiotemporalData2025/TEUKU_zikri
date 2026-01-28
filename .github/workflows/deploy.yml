@@ -49,25 +49,25 @@ jobs:
           npm install -D playwright-chromium
           npm run build -- --base /TEUKU_zikri/Algo4/
 
-      # Build Daylast Slidev
-      - name: Install & build Daylast
-        working-directory: ./Daylast/daylast-slidev
+      # Build DayLast Slidev
+      - name: Install & build DayLast
+        working-directory: ./DayLast/daylast-slidev
         run: |
           npm install
           npm install -D playwright-chromium
-          npm run build -- --base /TEUKU_zikri/Daylast/
+          npm run build -- --base /TEUKU_zikri/DayLast/
 
       # Gabungkan output ke folder publik untuk gh-pages
       - name: Prepare deploy directory
         run: |
           rm -rf public
-          mkdir -p public/Algo1 public/Algo2 public/Algo3 public/Algo4 public/Daylast
+          mkdir -p public/Algo1 public/Algo2 public/Algo3 public/Algo4 public/DayLast
 
           cp -r Algo1/algo1-slidev/dist/* public/Algo1/
           cp -r Algo2/algo2-slidev/dist/* public/Algo2/
           cp -r Algo3/algo3-slidev/dist/* public/Algo3/
           cp -r Algo4/algo4-slidev/dist/* public/Algo4/
-          cp -r Daylast/daylast-slidev/dist/* public/Daylast/
+          cp -r DayLast/daylast-slidev/dist/* public/DayLast/
 
           # index.html di root (optional, daftar link)
           cat > public/index.html << 'EOF'
@@ -84,7 +84,7 @@ jobs:
               <li><a href="./Algo2/">Algo2 Slides</a></li>
               <li><a href="./Algo3/">Algo3 Slides</a></li>
               <li><a href="./Algo4/">Algo4 Slides</a></li>
-              <li><a href="./Daylast/">Daylast Slides</a></li>
+              <li><a href="./DayLast/">daylast-Slides</a></li>
             </ul>
           </body>
           </html>
