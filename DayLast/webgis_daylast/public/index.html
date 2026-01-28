@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Urban Activity Pulse Map (Daylast)</title>
+
+  <!-- Leaflet (gratis) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <aside id="panel">
+      <h1>Urban Activity Pulse Map</h1>
+      <p class="muted">
+        Web GIS demo (gratis): peta + slider waktu + density grid + Top-5 hotspot.
+      </p>
+
+      <div class="card">
+        <h2>Data Source</h2>
+        <div class="toggle-group">
+          <label>
+            <input type="radio" name="dataSource" value="demo" checked />
+            Demo Data (offline)
+          </label>
+          <label>
+            <input type="radio" name="dataSource" value="overpass" />
+            Real POI (Overpass API)
+          </label>
+        </div>
+      </div>
+
+      <div id="overpassControls" class="card" style="display: none;">
+        <h2>POI Fetch</h2>
+        <button id="useMyLocationBtn" class="location-btn">📍 Use My Location</button>
+        <p class="muted small" id="locationStatus"></p>
+        <label>
+          Latitude:
+          <input id="poiLat" type="number" step="0.001" value="35.681" />
+        </label>
+        <label>
+          Longitude:
+          <input id="poiLon" type="number" step="0.001" value="139.767" />
+        </label>
+        <label>
+          Radius (m):
+          <input id="poiRadius" type="number" step="500" value="3000" />
+        </label>
+        <label>
+          Categories:
+          <div class="checkbox-group">
+            <label><input type="checkbox" value="convenience" checked /> Convenience</label>
+            <label><input type="checkbox" value="cafe" checked /> Cafe</label>
+            <label><input type="checkbox" value="restaurant" /> Restaurant</label>
+            <label><input type="checkbox" value="station" /> Station</label>
+          </div>
+        </label>
+        <button id="fetchPOIBtn">Fetch POI from Overpass</button>
+        <p class="muted small" id="poiStatus"></p>
+      </div>
+
+      <div class="card">
+        <label>
+          Jam (0–23):
+          <span id="hourLabel">12</span>
+        </label>
+        <input id="hourSlider" type="range" min="0" max="23" value="12" step="1" />
+      </div>
+
+      <div class="card">
+        <label>
+          Ukuran grid (derajat):
+          <span id="cellLabel">0.010</span>
+        </label>
+        <input id="cellSlider" type="range" min="0.004" max="0.03" value="0.01" step="0.001" />
+        <p class="muted small">
+          Kecil = detail tinggi (lebih banyak kotak). Besar = lebih kasar.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <button id="refreshBtn">Refresh Render</button>
+          <button id="fitBtn">Fit to Data</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Top-5 Hotspot</h2>
+        <ol id="top5"></ol>
+        <p class="muted small" id="stats"></p>
+      </div>
+
+      <div class="card">
+        <h2>Cara Demo</h2>
+        <ul class="small">
+          <li>Pilih <b>Demo Data</b> untuk test offline cepat.</li>
+          <li>Pilih <b>Real POI</b> untuk fetch dari Overpass API (butuh internet).</li>
+          <li>Geser jam → heatmap berubah.</li>
+          <li>Zoom/move peta → grid dihitung ulang pada viewport.</li>
+          <li>Klik item Top-5 → peta center ke hotspot.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main id="mapWrap">
+      <div id="map"></div>
+    </main>
+  </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script src="main.js"></script>
+</body>
+</html>
