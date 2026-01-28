@@ -1,6 +1,6 @@
 let map;
 let gridLayer = L.layerGroup();
-let userMarker = null; // Marker untuk lokasi user
+let userMarker = null; // Marker for user location
 
 const hourSlider = document.getElementById("hourSlider");
 const hourLabel  = document.getElementById("hourLabel");
@@ -289,7 +289,7 @@ function renderGrid() {
   updateTop5(counts, latMin, lonMin, cell);
 
   statsEl.textContent =
-    `hour=${hour}, total points=${currentPoints.length}, filtered=${filteredPoints.length}, inView=${inView}, cells=${counts.size}, maxCount=${maxCount}`;
+    `hour=${hour}, total=${currentPoints.length}, filtered=${filteredPoints.length}, inView=${inView}, cells=${counts.size}, max=${maxCount}`;
 }
 
 // ============================================================================

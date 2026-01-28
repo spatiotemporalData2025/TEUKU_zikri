@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Urban Activity Pulse Map (Daylast)</title>
 
-  <!-- Leaflet (gratis) -->
+  <!-- Leaflet (free) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -20,7 +20,7 @@
     <aside id="panel">
       <h1>Urban Activity Pulse Map</h1>
       <p class="muted">
-        Web GIS demo (gratis): peta + slider waktu + density grid + Top-5 hotspot.
+        Web GIS demo (free): map + time slider + density grid + Top-5 hotspots.
       </p>
 
       <div class="card">
@@ -68,7 +68,7 @@
 
       <div class="card">
         <label>
-          Jam (0–23):
+          Hour (0–23):
           <span id="hourLabel">12</span>
         </label>
         <input id="hourSlider" type="range" min="0" max="23" value="12" step="1" />
@@ -76,12 +76,12 @@
 
       <div class="card">
         <label>
-          Ukuran grid (derajat):
+          Grid size (degrees):
           <span id="cellLabel">0.010</span>
         </label>
         <input id="cellSlider" type="range" min="0.004" max="0.03" value="0.01" step="0.001" />
         <p class="muted small">
-          Kecil = detail tinggi (lebih banyak kotak). Besar = lebih kasar.
+          Small = high detail (more cells). Large = coarser.
         </p>
       </div>
 
@@ -99,13 +99,13 @@
       </div>
 
       <div class="card">
-        <h2>Cara Demo</h2>
+        <h2>How to Demo</h2>
         <ul class="small">
-          <li>Pilih <b>Demo Data</b> untuk test offline cepat.</li>
-          <li>Pilih <b>Real POI</b> untuk fetch dari Overpass API (butuh internet).</li>
-          <li>Geser jam → heatmap berubah.</li>
-          <li>Zoom/move peta → grid dihitung ulang pada viewport.</li>
-          <li>Klik item Top-5 → peta center ke hotspot.</li>
+          <li>Select <b>Demo Data</b> for quick offline testing.</li>
+          <li>Select <b>Real POI</b> to fetch from Overpass API (requires internet).</li>
+          <li>Slide hour → heatmap changes.</li>
+          <li>Zoom/move map → grid recalculates on viewport.</li>
+          <li>Click Top-5 item → map centers to hotspot.</li>
         </ul>
       </div>
     </aside>

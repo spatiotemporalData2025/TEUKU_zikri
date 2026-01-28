@@ -1,36 +1,36 @@
-# Urban Activity Pulse Map - Tugas Akhir Web GIS Spatio-Temporal
+# Urban Activity Pulse Map - Final Project Web GIS Spatio-Temporal
 
-**Nama**: [Isi nama Anda]  
-**NIM**: [Isi NIM Anda]  
-**Tim**: Individual / [Nama anggota lain jika ada]  
-**Mata Kuliah**: Algoritma dan Pemrograman (Web GIS - Spatio-Temporal)  
-**Tanggal**: Januari 2026
+**Name**: [Your Name]  
+**Student ID**: [Your Student ID]  
+**Team**: Individual / [Other team members if any]  
+**Course**: Algorithms and Programming (Web GIS - Spatio-Temporal)  
+**Date**: January 2026
 
 ---
 
-## 📋 Deskripsi Sistem
+## 📋 System Description
 
-**Urban Activity Pulse Map** adalah aplikasi Web GIS yang menampilkan visualisasi spatio-temporal dari aktivitas urban menggunakan:
+**Urban Activity Pulse Map** is a Web GIS application that displays spatio-temporal visualization of urban activity using:
 
 - **Backend**: Node.js + Express
 - **Frontend**: HTML/CSS/JavaScript + Leaflet + OpenStreetMap
-- **Data**: Overpass API (OpenStreetMap) - 100% GRATIS
+- **Data**: Overpass API (OpenStreetMap) - 100% FREE
 - **Platform**: Localhost (Ubuntu 24 WSL)
 
-### Fitur Utama
+### Main Features
 
-1. **Peta Interaktif** dengan Leaflet + OSM tiles
-2. **Slider Waktu (0–23 jam)** - mengubah visualisasi density secara real-time
-3. **Activity Density Grid** - heatmap berbasis grid cell dengan normalisasi warna
-4. **Top-5 Hotspot** - daftar area dengan aktivitas tertinggi, klik untuk zoom
+1. **Interactive Map** with Leaflet + OSM tiles
+2. **Time Slider (0–23 hours)** - changes density visualization in real-time
+3. **Activity Density Grid** - heatmap based on grid cells with color normalization
+4. **Top-5 Hotspots** - list of areas with highest activity, click to zoom
 5. **Dual Data Source**:
-   - **Demo Data** (offline, deterministik) untuk testing cepat
-   - **Real POI** (Overpass API) untuk data riil: convenience store, cafe, restaurant, station
-6. **Click-to-fetch** - klik peta untuk set lokasi dan fetch POI dalam radius tertentu
+   - **Demo Data** (offline, deterministic) for quick testing
+   - **Real POI** (Overpass API) for real data: convenience store, cafe, restaurant, station
+6. **Click-to-fetch** - click map to set location and fetch POI within radius
 
 ---
 
-## 🏗️ Arsitektur Sistem
+## 🏗️ System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -65,11 +65,11 @@
 
 ```
 DayLast/
-├── README.md                    # Dokumentasi utama (file ini)
-├── BLUEPRINT.md                 # Blueprint 3 minggu (milestone)
-├── OVERPASS_QUERIES.md          # Query Overpass lengkap
-├── DELIVERABLES_CHECKLIST.md   # Checklist untuk penilaian
-├── illustrations/               # Screenshot, diagram
+├── README.md                    # Main documentation (this file)
+├── BLUEPRINT.md                 # 3-week blueprint (milestones)
+├── OVERPASS_QUERIES.md          # Complete Overpass queries
+├── DELIVERABLES_CHECKLIST.md   # Checklist for grading
+├── illustrations/               # Screenshots, diagrams
 │   ├── screenshot-demo.png
 │   ├── screenshot-overpass.png
 │   ├── architecture-diagram.png
@@ -85,12 +85,12 @@ DayLast/
 
 ---
 
-## 🚀 Cara Menjalankan (Ubuntu 24 WSL)
+## 🚀 How to Run (Ubuntu 24 WSL)
 
 ### Prerequisites
 
-1. **Node.js** versi 18+ sudah terinstall
-2. **Internet connection** (untuk fetch Overpass API dan OSM tiles)
+1. **Node.js** version 18+ installed
+2. **Internet connection** (to fetch Overpass API and OSM tiles)
 
 ### Step 1: Install Dependencies
 
@@ -99,9 +99,9 @@ cd ~/TEUKU_zikri/DayLast/webgis_daylast
 npm install
 ```
 
-Akan install:
+Will install:
 - `express` (web server)
-- `axios` (HTTP client untuk Overpass API)
+- `axios` (HTTP client for Overpass API)
 
 ### Step 2: Start Server
 
@@ -115,9 +115,9 @@ Output:
    (WSL) Open from Windows browser: http://localhost:8000
 ```
 
-### Step 3: Buka di Browser
+### Step 3: Open in Browser
 
-Dari **Windows browser** (Chrome/Firefox/Edge), buka:
+From **Windows browser** (Chrome/Firefox/Edge), open:
 
 ```
 http://localhost:8000
@@ -125,23 +125,23 @@ http://localhost:8000
 
 ### Step 4: Test Demo Data (Offline)
 
-1. **Default mode**: "Demo Data" sudah aktif
-2. **Geser slider jam** (0–23) → heatmap berubah
-3. **Zoom/pan peta** → grid dihitung ulang untuk viewport
-4. **Klik item Top-5** → peta zoom ke hotspot
-5. **Adjust cell size** → ubah resolusi grid
+1. **Default mode**: "Demo Data" is active
+2. **Slide hour slider** (0–23) → heatmap changes
+3. **Zoom/pan map** → grid recalculates for viewport
+4. **Click Top-5 item** → map zooms to hotspot
+5. **Adjust cell size** → change grid resolution
 
 ### Step 5: Test Real POI (Overpass API)
 
-1. **Pilih "Real POI (Overpass API)"**
-2. **Atur lokasi**:
-   - Input manual: masukkan lat/lon (contoh: Tokyo Station 35.681 / 139.767)
-   - Click map: klik peta untuk set lokasi otomatis
-3. **Pilih kategori**: Convenience, Cafe, Restaurant, Station
+1. **Select "Real POI (Overpass API)"**
+2. **Set location**:
+   - Manual input: enter lat/lon (e.g., Tokyo Station 35.681 / 139.767)
+   - Click map: click map to auto-set location
+3. **Select categories**: Convenience, Cafe, Restaurant, Station
 4. **Set radius**: default 3000m (3km)
-5. **Klik "Fetch POI from Overpass"**
-6. **Wait**: akan ada loading indicator
-7. **Result**: POI muncul di peta, slider jam aktif
+5. **Click "Fetch POI from Overpass"**
+6. **Wait**: loading indicator will appear
+7. **Result**: POI appears on map, hour slider is active
 
 ---
 
@@ -197,14 +197,14 @@ function computeActivityGrid(points, bounds, cellSize, hour) {
 }
 ```
 
-### Kompleksitas
+### Complexity
 - **Time**: O(n + k log k)
-  - n = jumlah points (filter + count)
-  - k = jumlah cells (sort)
+  - n = number of points (filter + count)
+  - k = number of cells (sort)
 - **Space**: O(k)
-  - k cells dalam viewport
+  - k cells in viewport
 
-### Normalisasi Warna (Heatmap)
+### Color Normalization (Heatmap)
 ```javascript
 opacity = 0.10 + 0.70 * (count / maxCount)
 
@@ -239,7 +239,7 @@ out body;
 ```
 
 ### Parameters
-- `around:RADIUS,LAT,LON` - radius dalam meter
+- `around:RADIUS,LAT,LON` - radius in meters
 - `node["key"="value"]` - filter by tag
 - `out body` - return full node data (lat, lon, tags)
 
@@ -272,24 +272,24 @@ out body;
 
 ---
 
-## 📊 Aspek Spatio-Temporal
+## 📊 Spatio-Temporal Aspects
 
 ### Spatio (Space)
-- **Grid cells** dengan lat/lon bounds
-- **Distance-based query**: radius dari titik pusat
-- **Viewport filtering**: hanya render data in-view
-- **Zoom-adaptive**: grid resolution bisa diubah
+- **Grid cells** with lat/lon bounds
+- **Distance-based query**: radius from center point
+- **Viewport filtering**: only render in-view data
+- **Zoom-adaptive**: adjustable grid resolution
 
 ### Temporal (Time)
-- **Hour slider (0–23)**: simulasi time-of-day
+- **Hour slider (0–23)**: time-of-day simulation
 - **Dynamic filtering**: filter points by selected hour
 - **Activity patterns**:
-  - Peak hours: 8–10 (pagi), 17–20 (sore)
-  - Off-peak: 0–6 (malam), 22–23 (larut)
-- **Real-time update**: grid re-render saat slider berubah
+  - Peak hours: 8–10 (morning), 17–20 (evening)
+  - Off-peak: 0–6 (night), 22–23 (late night)
+- **Real-time update**: grid re-renders when slider changes
 
-### Synthetic Hour Distribution (untuk POI)
-Karena Overpass API tidak return "jam buka real-time", kita gunakan **synthetic distribution**:
+### Synthetic Hour Distribution (for POI)
+Since Overpass API doesn't return "real-time opening hours", we use **synthetic distribution**:
 
 ```javascript
 // Weighted distribution
@@ -301,35 +301,35 @@ else hour = random 0-23  // rest distributed
 
 ---
 
-## 📸 Screenshot & Demo
+## 📸 Screenshots & Demo
 
-Lihat folder `illustrations/`:
+See `illustrations/` folder:
 - `screenshot-demo.png` - Demo data mode
 - `screenshot-overpass.png` - Real POI mode
 - `architecture-diagram.png` - System architecture
-- `demo-flow.gif` - Animated demo (opsional)
+- `demo-flow.gif` - Animated demo (optional)
 
 ---
 
 ## 🎯 Deliverables Checklist
 
 ✅ **Source Code**
-- `server.js` dengan Overpass integration + caching
-- `index.html`, `main.js`, `style.css` dengan UI lengkap
-- `package.json` dengan dependencies
+- `server.js` with Overpass integration + caching
+- `index.html`, `main.js`, `style.css` with complete UI
+- `package.json` with dependencies
 
-✅ **Dokumentasi**
-- README.md (file ini) dengan penjelasan lengkap
-- Blueprint 3 minggu (BLUEPRINT.md)
+✅ **Documentation**
+- README.md (this file) with comprehensive explanation
+- 3-week blueprint (BLUEPRINT.md)
 - Overpass queries (OVERPASS_QUERIES.md)
-- Checklist deliverables (DELIVERABLES_CHECKLIST.md)
+- Deliverables checklist (DELIVERABLES_CHECKLIST.md)
 
-✅ **Fitur Wajib**
-- [x] Peta interaktif (Leaflet + OSM)
-- [x] Slider waktu (0–23 jam)
+✅ **Required Features**
+- [x] Interactive map (Leaflet + OSM)
+- [x] Time slider (0–23 hours)
 - [x] Activity density grid (heatmap)
-- [x] Top-5 hotspot (clickable)
-- [x] Data gratis (Overpass API)
+- [x] Top-5 hotspots (clickable)
+- [x] Free data (Overpass API)
 - [x] Spatio-temporal algorithm
 
 ✅ **Bonus**
@@ -342,70 +342,70 @@ Lihat folder `illustrations/`:
 
 ---
 
-## 🎤 Presentasi (3 Menit Demo)
+## 🎤 Presentation (3-Minute Demo)
 
-### Script Demo
+### Demo Script
 
-**Menit 1: Intro + Demo Data**
+**Minute 1: Intro + Demo Data**
 ```
-"Selamat pagi/siang. Saya [nama], NIM [nim].
-Ini adalah Urban Activity Pulse Map, aplikasi Web GIS untuk
-visualisasi spatio-temporal aktivitas urban.
+"Good morning/afternoon. I'm [name], student ID [id].
+This is Urban Activity Pulse Map, a Web GIS application for
+spatio-temporal visualization of urban activity.
 
-[Show browser] Di sini ada peta dengan density grid.
-[Geser slider jam] Ketika saya geser slider waktu,
-grid berubah sesuai distribusi aktivitas per jam.
+[Show browser] Here's the map with density grid.
+[Slide time slider] When I slide the time slider,
+the grid changes according to activity distribution per hour.
 
-[Zoom/pan] Grid dihitung real-time sesuai viewport.
-[Klik Top-5] Top-5 hotspot di sini, klik untuk zoom ke area."
+[Zoom/pan] Grid is calculated in real-time for the viewport.
+[Click Top-5] These are the top-5 hotspots, click to zoom to area."
 ```
 
-**Menit 2: Overpass API**
+**Minute 2: Overpass API**
 ```
-"Sekarang mode Real POI. [Toggle radio]
-Saya pilih lokasi [klik peta atau input manual],
-set radius 3km, pilih kategori Cafe dan Convenience.
+"Now Real POI mode. [Toggle radio]
+I'll select a location [click map or manual input],
+set radius to 3km, select Cafe and Convenience categories.
 
-[Klik Fetch POI] Sistem fetch dari Overpass API...
-[Wait] Loading... [Result muncul]
-Done! Sekarang ada [X] POI dari OpenStreetMap.
+[Click Fetch POI] System fetches from Overpass API...
+[Wait] Loading... [Result appears]
+Done! Now there are [X] POI from OpenStreetMap.
 
-Data ini gratis 100%, tanpa billing, langsung dari
+This data is 100% free, no billing, directly from
 OpenStreetMap via Overpass API."
 ```
 
-**Menit 3: Algoritma + Q&A**
+**Minute 3: Algorithm + Q&A**
 ```
-"Algoritma density grid:
+"Density grid algorithm:
 1. Filter points by hour
 2. Count per grid cell (binning)
-3. Normalisasi warna (heatmap)
-4. Sort untuk Top-5
+3. Color normalization (heatmap)
+4. Sort for Top-5
 
-Kompleksitas O(n + k log k).
+Complexity O(n + k log k).
 
-Backend: Node.js + Express dengan caching 1 jam.
-Frontend: Leaflet untuk peta, Vanilla JS.
+Backend: Node.js + Express with 1-hour caching.
+Frontend: Leaflet for maps, Vanilla JS.
 
-Semua source code ada di repo. Terima kasih!"
+All source code is in the repo. Thank you!"
 ```
 
 ### Q&A Anticipation
 
-**Q: Kenapa pakai Overpass API?**
-A: Gratis, no billing, data OpenStreetMap lengkap, cocok untuk tugas akademik.
+**Q: Why use Overpass API?**
+A: Free, no billing, complete OpenStreetMap data, suitable for academic projects.
 
-**Q: Bagaimana handle jam buka POI?**
-A: Tag `opening_hours` ada, tapi kita gunakan synthetic distribution untuk demo spatio-temporal.
+**Q: How to handle POI opening hours?**
+A: `opening_hours` tag exists, but we use synthetic distribution for spatio-temporal demo.
 
-**Q: Kenapa ada mode demo?**
-A: Untuk testing offline dan demo cepat tanpa wait Overpass fetch.
+**Q: Why have demo mode?**
+A: For offline testing and quick demo without waiting for Overpass fetch.
 
-**Q: Cell size optimal?**
-A: Tergantung zoom level. Default 0.01° (~1km) bagus untuk urban scale.
+**Q: Optimal cell size?**
+A: Depends on zoom level. Default 0.01° (~1km) is good for urban scale.
 
-**Q: Bisa deploy ke cloud?**
-A: Bisa, tapi tugas ini cukup localhost. Tinggal deploy ke Vercel/Netlify (gratis).
+**Q: Can deploy to cloud?**
+A: Yes, but this project only needs localhost. Can deploy to Vercel/Netlify (free).
 
 ---
 
@@ -417,23 +417,23 @@ npm install
 ```
 
 ### Error: Overpass API timeout
-- **Cause**: Query terlalu kompleks atau radius terlalu besar
-- **Fix**: Kurangi radius (<5000m) atau pilih lebih sedikit kategori
+- **Cause**: Query too complex or radius too large
+- **Fix**: Reduce radius (<5000m) or select fewer categories
 
-### Error: CORS (jika buka file:///)
-- **Cause**: Buka HTML langsung, bukan via server
-- **Fix**: Harus pakai `npm start` dan buka `http://localhost:8000`
+### Error: CORS (if opening file:///)
+- **Cause**: Opening HTML directly, not via server
+- **Fix**: Must use `npm start` and open `http://localhost:8000`
 
-### Peta tidak muncul
+### Map not appearing
 - **Check**: Console error? Leaflet CDN loaded?
-- **Fix**: Pastikan internet aktif untuk load Leaflet + OSM tiles
+- **Fix**: Ensure internet is active to load Leaflet + OSM tiles
 
-### Cache tidak clear
-- **Restart server**: Cache in-memory, hilang saat restart
+### Cache not clearing
+- **Restart server**: Cache is in-memory, cleared on restart
 
 ---
 
-## 📚 Referensi
+## 📚 References
 
 - **Leaflet**: https://leafletjs.com/
 - **OpenStreetMap**: https://www.openstreetmap.org/
@@ -443,34 +443,34 @@ npm install
 
 ---
 
-## 📝 Catatan Pengembangan
+## 📝 Development Notes
 
-**Apa yang sudah dicapai:**
-- ✅ Full Overpass integration dengan caching
+**What has been achieved:**
+- ✅ Full Overpass integration with caching
 - ✅ Dual data source (demo + real)
-- ✅ Activity density algorithm dengan normalisasi warna
-- ✅ Top-5 hotspot interactive
+- ✅ Activity density algorithm with color normalization
+- ✅ Interactive Top-5 hotspots
 - ✅ Click-to-set location
 - ✅ Comprehensive documentation
 
-**Potensi improvement (future work):**
-- [ ] Real opening_hours parsing (jika tag tersedia)
+**Potential improvements (future work):**
+- [ ] Real opening_hours parsing (if tag available)
 - [ ] Save/load favorite locations
 - [ ] Export data to GeoJSON/CSV
-- [ ] Heatmap.js plugin untuk alternative visualization
+- [ ] Heatmap.js plugin for alternative visualization
 - [ ] Animation slider (auto-play 0→23)
 
 ---
 
-## 📄 Lisensi
+## 📄 License
 
-Proyek ini dibuat untuk keperluan akademik (tugas akhir).
-Semua data dari OpenStreetMap (ODbL license).
+This project was created for academic purposes (final project).
+All data from OpenStreetMap (ODbL license).
 
-**Author**: [Nama Anda]  
-**Date**: Januari 2026  
-**Course**: Algoritma & Pemrograman (Web GIS)
+**Author**: [Your Name]  
+**Date**: January 2026  
+**Course**: Algorithms & Programming (Web GIS)
 
 ---
 
-**Terakhir diperbarui**: 29 Januari 2026
+**Last updated**: January 29, 2026

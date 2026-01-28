@@ -14,9 +14,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 /**
  * Demo dataset generator:
- * - menghasilkan titik (lat, lon, hour) secara deterministik (seeded)
- * - titik tersebar di sekitar pusat (default: Tokyo Station)
- * - ini aman untuk demo offline (tanpa Overpass / API berbayar)
+ * - Generates points (lat, lon, hour) deterministically (seeded)
+ * - Points scattered around center (default: Tokyo Station)
+ * - Safe for offline demo (without Overpass / paid APIs)
  */
 
 const CENTER = {
@@ -41,15 +41,15 @@ const ALL_POINTS = Array.from({ length: TOTAL_POINTS }, (_, i) => {
   // hour 0..23
   const hour = Math.floor(rand() * 24);
 
-  // sebaran gaussian-ish sederhana (pakai sum-uniform)
+  // Simple gaussian-ish distribution (using sum-uniform)
   const r1 = (rand() + rand() + rand() + rand()) / 4; // ~0..1
   const r2 = (rand() + rand() + rand() + rand()) / 4;
 
-  // radius derajat kira-kira (0.01 ~ 1km-ish), tweak sesuai zoom
+  // Degree radius roughly (0.01 ~ 1km-ish), tweak according to zoom
   const spreadLat = 0.06;  // ~6-7km
-  const spreadLon = 0.08;  // ~7-9km (tergantung lat)
+  const spreadLon = 0.08;  // ~7-9km (depends on latitude)
 
-  // bikin cluster sedikit biar hotspot kelihatan
+  // Create clusters to make hotspots visible
   const clusterBias = (hour >= 8 && hour <= 10) || (hour >= 17 && hour <= 20) ? 1.6 : 1.0;
 
   const lat = CENTER.lat + (r1 - 0.5) * spreadLat * clusterBias;
@@ -58,7 +58,7 @@ const ALL_POINTS = Array.from({ length: TOTAL_POINTS }, (_, i) => {
   return { id: i, lat, lon, hour };
 });
 
-// API: ambil points per hour (atau semua) - DEMO DATA
+// API: get points per hour (or all) - DEMO DATA
 app.get("/api/points", (req, res) => {
   const hourParam = req.query.hour;
   if (hourParam === undefined) {
@@ -81,7 +81,7 @@ const cache = new Map(); // In-memory cache
 const CACHE_TTL = 3600000; // 1 hour
 
 /**
- * Fetch POI dari Overpass API dengan kategori tertentu
+ * Fetch POI from Overpass API with specific categories
  * Categories: convenience, cafe, restaurant, station
  */
 app.get("/api/poi", async (req, res) => {
