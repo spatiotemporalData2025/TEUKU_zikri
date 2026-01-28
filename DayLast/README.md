@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 System Description
+## System Description
 
 **Urban Activity Pulse Map** is a Web GIS application that displays spatio-temporal visualization of urban activity using:
 
@@ -30,7 +30,7 @@
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ![System Architecture](webgis_daylast/public/illustrations/architecture-diagram.svg)
 
@@ -91,7 +91,7 @@ DayLast/
 
 ---
 
-## 🚀 How to Run (Ubuntu 24 WSL)
+## How to Run (Ubuntu 24 WSL)
 
 ### Prerequisites
 
@@ -117,8 +117,8 @@ npm start
 
 Output:
 ```
-✅ Server running on http://localhost:8000
-   (WSL) Open from Windows browser: http://localhost:8000
+Server running on http://localhost:8000
+(WSL) Open from Windows browser: http://localhost:8000
 ```
 
 ### Step 3: Open in Browser
@@ -151,7 +151,7 @@ http://localhost:8000
 
 ---
 
-## 🧮 Algoritma: Activity Density Grid
+## Algoritma: Activity Density Grid
 
 ### Input
 - Array of points: `[{lat, lon, hour, ...}]`
@@ -222,7 +222,7 @@ else color = "blue"  // cool
 
 ---
 
-## 🗺️ Overpass API: Query POI
+## Overpass API: Query POI
 
 ### Endpoint
 ```
@@ -278,7 +278,7 @@ out body;
 
 ---
 
-## 📊 Spatio-Temporal Aspects
+## Spatio-Temporal Aspects
 
 ### Spatio (Space)
 - **Grid cells** with lat/lon bounds
@@ -307,7 +307,7 @@ else hour = random 0-23  // rest distributed
 
 ---
 
-## 📸 Screenshots & Demo
+## Screenshots & Demo
 
 See `illustrations/` folder:
 - `screenshot-demo.png` - Demo data mode
@@ -317,20 +317,20 @@ See `illustrations/` folder:
 
 ---
 
-## 🎯 Deliverables Checklist
+## Deliverables Checklist
 
-✅ **Source Code**
+**Source Code**
 - `server.js` with Overpass integration + caching
 - `index.html`, `main.js`, `style.css` with complete UI
 - `package.json` with dependencies
 
-✅ **Documentation**
+**Documentation**
 - README.md (this file) with comprehensive explanation
 - 3-week blueprint (BLUEPRINT.md)
 - Overpass queries (OVERPASS_QUERIES.md)
 - Deliverables checklist (DELIVERABLES_CHECKLIST.md)
 
-✅ **Required Features**
+**Required Features**
 - [x] Interactive map (Leaflet + OSM)
 - [x] Time slider (0–23 hours)
 - [x] Activity density grid (heatmap)
@@ -338,7 +338,7 @@ See `illustrations/` folder:
 - [x] Free data (Overpass API)
 - [x] Spatio-temporal algorithm
 
-✅ **Bonus**
+**Bonus**
 - [x] Dual data source (demo + real)
 - [x] Click-to-set location
 - [x] Category selection (multiple)
@@ -348,7 +348,7 @@ See `illustrations/` folder:
 
 ---
 
-## 🎤 Presentation (3-Minute Demo)
+## Presentation (3-Minute Demo)
 
 ### Demo Script
 
@@ -396,26 +396,9 @@ Frontend: Leaflet for maps, Vanilla JS.
 All source code is in the repo. Thank you!"
 ```
 
-### Q&A Anticipation
-
-**Q: Why use Overpass API?**
-A: Free, no billing, complete OpenStreetMap data, suitable for academic projects.
-
-**Q: How to handle POI opening hours?**
-A: `opening_hours` tag exists, but we use synthetic distribution for spatio-temporal demo.
-
-**Q: Why have demo mode?**
-A: For offline testing and quick demo without waiting for Overpass fetch.
-
-**Q: Optimal cell size?**
-A: Depends on zoom level. Default 0.01° (~1km) is good for urban scale.
-
-**Q: Can deploy to cloud?**
-A: Yes, but this project only needs localhost. Can deploy to Vercel/Netlify (free).
-
 ---
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### Error: `Cannot find module 'axios'`
 ```bash
@@ -439,7 +422,7 @@ npm install
 
 ---
 
-## 📚 References
+## References
 
 - **Leaflet**: https://leafletjs.com/
 - **OpenStreetMap**: https://www.openstreetmap.org/
@@ -449,15 +432,15 @@ npm install
 
 ---
 
-## 📝 Development Notes
+## Development Notes
 
 **What has been achieved:**
-- ✅ Full Overpass integration with caching
-- ✅ Dual data source (demo + real)
-- ✅ Activity density algorithm with color normalization
-- ✅ Interactive Top-5 hotspots
-- ✅ Click-to-set location
-- ✅ Comprehensive documentation
+- Full Overpass integration with caching
+- Dual data source (demo + real)
+- Activity density algorithm with color normalization
+- Interactive Top-5 hotspots
+- Click-to-set location
+- Comprehensive documentation
 
 **Potential improvements (future work):**
 - [ ] Real opening_hours parsing (if tag available)
