@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #2c3e50; stroke-width: 2; }
+      .title-box { fill: #3498db; stroke: #2c3e50; stroke-width: 2; }
+      .cache-box { fill: #f39c12; stroke: #2c3e50; stroke-width: 2; }
+      .api-box { fill: #27ae60; stroke: #2c3e50; stroke-width: 2; }
+      .text { font-family: 'Arial', sans-serif; font-size: 14px; fill: #2c3e50; }
+      .title-text { font-family: 'Arial', sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
+      .small-text { font-family: 'Arial', sans-serif; font-size: 12px; fill: #2c3e50; }
+      .arrow { stroke: #2c3e50; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .label { font-family: 'Arial', sans-serif; font-size: 12px; fill: #e74c3c; font-weight: bold; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2c3e50" />
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="#ecf0f1"/>
+  
+  <!-- Browser Section -->
+  <rect x="50" y="30" width="700" height="120" class="title-box" rx="5"/>
+  <text x="400" y="55" text-anchor="middle" class="title-text">BROWSER (Client)</text>
+  
+  <!-- Browser Components -->
+  <rect x="80" y="70" width="180" height="60" class="box" rx="3"/>
+  <text x="170" y="95" text-anchor="middle" class="text">Leaflet Map</text>
+  <text x="170" y="115" text-anchor="middle" class="small-text">Interactive OSM</text>
+  
+  <rect x="310" y="70" width="180" height="60" class="box" rx="3"/>
+  <text x="400" y="95" text-anchor="middle" class="text">Time Slider</text>
+  <text x="400" y="115" text-anchor="middle" class="small-text">0-23 hours</text>
+  
+  <rect x="540" y="70" width="180" height="60" class="box" rx="3"/>
+  <text x="630" y="95" text-anchor="middle" class="text">Top-5 List</text>
+  <text x="630" y="115" text-anchor="middle" class="small-text">Hotspot areas</text>
+  
+  <!-- Arrow Browser to Server -->
+  <line x1="400" y1="150" x2="400" y2="200" class="arrow"/>
+  <text x="420" y="180" class="label">HTTP/JSON</text>
+  
+  <!-- Express Server Section -->
+  <rect x="50" y="200" width="700" height="240" class="title-box" rx="5"/>
+  <text x="400" y="225" text-anchor="middle" class="title-text">Express Server (Node.js)</text>
+  
+  <!-- API Endpoints -->
+  <rect x="80" y="245" width="640" height="110" class="box" rx="3"/>
+  <text x="400" y="265" text-anchor="middle" class="text" font-weight="bold">API Endpoints:</text>
+  <text x="100" y="290" class="small-text">GET  /api/points?hour=...  (demo data)</text>
+  <text x="100" y="310" class="small-text">GET  /api/poi?lat=...&amp;lon=...&amp;radius=...  (Overpass)</text>
+  <text x="100" y="330" class="small-text">POST /api/grid (compute density)</text>
+  <text x="100" y="350" class="small-text">GET  /api/health (status check)</text>
+  
+  <!-- Cache -->
+  <rect x="80" y="370" width="640" height="50" class="cache-box" rx="3"/>
+  <text x="400" y="395" text-anchor="middle" class="title-text">In-Memory Cache (Map)</text>
+  <text x="400" y="415" text-anchor="middle" class="title-text" font-size="12px">TTL: 1 hour (3600s)</text>
+  
+  <!-- Arrow Server to Overpass -->
+  <line x1="400" y1="440" x2="400" y2="490" class="arrow"/>
+  <text x="420" y="470" class="label">Overpass QL</text>
+  
+  <!-- Overpass API Section -->
+  <rect x="50" y="490" width="700" height="80" class="api-box" rx="5"/>
+  <text x="400" y="515" text-anchor="middle" class="title-text">Overpass API (OpenStreetMap)</text>
+  <text x="400" y="540" text-anchor="middle" class="title-text" font-size="13px">https://overpass-api.de/api/interpreter</text>
+  <text x="400" y="560" text-anchor="middle" class="title-text" font-size="12px">Query POI: amenity=convenience|cafe|restaurant|station</text>
+  
+  <!-- Legend -->
+  <text x="50" y="20" class="small-text" font-weight="bold">Urban Activity Pulse Map - System Architecture</text>
+</svg>

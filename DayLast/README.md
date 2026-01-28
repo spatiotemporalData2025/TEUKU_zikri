@@ -32,6 +32,11 @@
 
 ## 🏗️ System Architecture
 
+![System Architecture](webgis_daylast/public/illustrations/architecture-diagram.svg)
+
+<details>
+<summary>View Text Version</summary>
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    BROWSER (Client)                         │
@@ -60,6 +65,7 @@
 │  Query POI: amenity=convenience|cafe|restaurant|station     │
 └─────────────────────────────────────────────────────────────┘
 ```
+</details>
 
 ### Folder Structure
 
@@ -460,17 +466,3 @@ npm install
 - [ ] Heatmap.js plugin for alternative visualization
 - [ ] Animation slider (auto-play 0→23)
 
----
-
-## 📄 License
-
-This project was created for academic purposes (final project).
-All data from OpenStreetMap (ODbL license).
-
-**Author**: [Your Name]  
-**Date**: January 2026  
-**Course**: Algorithms & Programming (Web GIS)
-
----
-
-**Last updated**: January 29, 2026
