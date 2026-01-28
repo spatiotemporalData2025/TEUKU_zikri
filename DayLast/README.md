@@ -2,7 +2,7 @@
 
 slides about implementation can be find here:
 
-https://spatiotemporaldata2025.github.io/TEUKU_zikri/daylast-slidev
+https://spatiotemporaldata2025.github.io/TEUKU_zikri/DayLast/
 
 ---
 ## System Description
