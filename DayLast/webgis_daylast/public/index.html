@@ -58,8 +58,21 @@
           <div class="checkbox-group">
             <label><input type="checkbox" value="convenience" checked /> Convenience</label>
             <label><input type="checkbox" value="cafe" checked /> Cafe</label>
-            <label><input type="checkbox" value="restaurant" /> Restaurant</label>
+            <label><input type="checkbox" value="restaurant" checked /> Restaurant</label>
             <label><input type="checkbox" value="station" /> Station</label>
+            <label><input type="checkbox" value="supermarket" checked /> Supermarket</label>
+            <label><input type="checkbox" value="pharmacy" /> Pharmacy</label>
+            <label><input type="checkbox" value="hospital" /> Hospital</label>
+            <label><input type="checkbox" value="school" /> School</label>
+            <label><input type="checkbox" value="university" /> University</label>
+            <label><input type="checkbox" value="bank" /> Bank</label>
+            <label><input type="checkbox" value="atm" /> ATM</label>
+            <label><input type="checkbox" value="fuel" /> Fuel</label>
+            <label><input type="checkbox" value="parking" /> Parking</label>
+            <label><input type="checkbox" value="hotel" /> Hotel</label>
+            <label><input type="checkbox" value="bus_stop" /> Bus Stop</label>
+            <label><input type="checkbox" value="park" /> Park</label>
+            <label><input type="checkbox" value="mall" /> Mall</label>
           </div>
         </label>
         <button id="fetchPOIBtn">Fetch POI from Overpass</button>
@@ -68,20 +81,29 @@
 
       <div class="card">
         <label>
-          Hour (0–23):
-          <span id="hourLabel">12</span>
+          Hour range (0–23):
+          <span id="hourLabel">7–18</span>
         </label>
-        <input id="hourSlider" type="range" min="0" max="23" value="12" step="1" />
+        <div class="range-group">
+          <input id="hourStart" type="range" min="0" max="23" value="7" step="1" />
+          <input id="hourEnd" type="range" min="0" max="23" value="18" step="1" />
+        </div>
+        <p class="muted small">Gunakan dua slider untuk memilih rentang jam.</p>
       </div>
 
       <div class="card">
         <label>
-          Grid size (degrees):
-          <span id="cellLabel">0.010</span>
+          DBSCAN epsilon (meters):
+          <span id="epsLabel">625</span>
         </label>
-        <input id="cellSlider" type="range" min="0.004" max="0.03" value="0.01" step="0.001" />
+        <input id="epsSlider" type="range" min="50" max="1000" value="625" step="25" />
+        <label style="margin-top:8px; display:block;">
+          DBSCAN minPts:
+          <span id="minPtsLabel">3</span>
+        </label>
+        <input id="minPtsSlider" type="range" min="3" max="30" value="3" step="1" />
         <p class="muted small">
-          Small = high detail (more cells). Large = coarser.
+          Epsilon = jarak maksimum antar titik dalam satu klaster.
         </p>
       </div>
 
@@ -93,7 +115,12 @@
       </div>
 
       <div class="card">
-        <h2>Top-5 Hotspot</h2>
+        <h2>Hotspot</h2>
+        <label>
+          Jumlah hotspot:
+          <span id="hotspotLabel">5</span>
+        </label>
+        <input id="hotspotSlider" type="range" min="1" max="20" value="5" step="1" />
         <ol id="top5"></ol>
         <p class="muted small" id="stats"></p>
       </div>

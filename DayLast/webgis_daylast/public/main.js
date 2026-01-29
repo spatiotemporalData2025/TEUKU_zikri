@@ -2,11 +2,18 @@ let map;
 let gridLayer = L.layerGroup();
 let userMarker = null; // Marker for user location
 
-const hourSlider = document.getElementById("hourSlider");
+const hourStart = document.getElementById("hourStart");
+const hourEnd = document.getElementById("hourEnd");
 const hourLabel  = document.getElementById("hourLabel");
 
-const cellSlider = document.getElementById("cellSlider");
-const cellLabel  = document.getElementById("cellLabel");
+const epsSlider = document.getElementById("epsSlider");
+const epsLabel  = document.getElementById("epsLabel");
+
+const minPtsSlider = document.getElementById("minPtsSlider");
+const minPtsLabel  = document.getElementById("minPtsLabel");
+
+const hotspotSlider = document.getElementById("hotspotSlider");
+const hotspotLabel = document.getElementById("hotspotLabel");
 
 const top5El = document.getElementById("top5");
 const statsEl = document.getElementById("stats");
@@ -30,12 +37,13 @@ function fmt(n, d = 5) {
   return Number(n).toFixed(d);
 }
 
+
 // ============================================================================
 // DATA FETCHING
 // ============================================================================
 
-async function fetchPointsByHour(hour) {
-  const res = await fetch(`/api/points?hour=${hour}`);
+async function fetchAllPoints() {
+  const res = await fetch(`/api/points`);
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || "Failed to fetch points");
@@ -214,100 +222,189 @@ function initMap() {
 // GRID RENDERING & ACTIVITY DENSITY
 // ============================================================================
 
-function getCellSize() {
-  return Number(cellSlider.value);
+function getEpsilon() {
+  return Number(epsSlider.value);
+}
+
+function getMinPts() {
+  return Number(minPtsSlider.value);
+}
+
+function dbscan(points, eps, minPts) {
+  const n = points.length;
+  const labels = new Array(n).fill(0); // 0 = unvisited, -1 = noise, >0 = cluster id
+  let clusterId = 0;
+
+  const neighborsCache = new Map();
+
+  function regionQuery(i) {
+    if (neighborsCache.has(i)) return neighborsCache.get(i);
+    const neighbors = [];
+    const p = points[i].__proj;
+    for (let j = 0; j < n; j++) {
+      const q = points[j].__proj;
+      const dx = p.x - q.x;
+      const dy = p.y - q.y;
+      if (dx * dx + dy * dy <= eps * eps) neighbors.push(j);
+    }
+    neighborsCache.set(i, neighbors);
+    return neighbors;
+  }
+
+  for (let i = 0; i < n; i++) {
+    if (labels[i] !== 0) continue;
+    const neighbors = regionQuery(i);
+    if (neighbors.length < minPts) {
+      labels[i] = -1;
+      continue;
+    }
+
+    clusterId++;
+    labels[i] = clusterId;
+
+    const seeds = neighbors.slice();
+    for (let k = 0; k < seeds.length; k++) {
+      const j = seeds[k];
+      if (labels[j] === -1) labels[j] = clusterId;
+      if (labels[j] !== 0) continue;
+      labels[j] = clusterId;
+      const n2 = regionQuery(j);
+      if (n2.length >= minPts) {
+        seeds.push(...n2);
+      }
+    }
+  }
+
+  const clusters = new Map();
+  const noise = [];
+  for (let i = 0; i < n; i++) {
+    const label = labels[i];
+    if (label === -1) {
+      noise.push(points[i]);
+    } else if (label > 0) {
+      if (!clusters.has(label)) clusters.set(label, []);
+      clusters.get(label).push(points[i]);
+    }
+  }
+
+  return { clusters: Array.from(clusters.values()), noise };
+}
+
+function convexHull(points) {
+  if (points.length < 3) return points.slice();
+
+  const pts = points
+    .map(p => ({ lat: p.lat, lon: p.lon }))
+    .sort((a, b) => (a.lon === b.lon ? a.lat - b.lat : a.lon - b.lon));
+
+  const cross = (o, a, b) => (a.lon - o.lon) * (b.lat - o.lat) - (a.lat - o.lat) * (b.lon - o.lon);
+
+  const lower = [];
+  for (const p of pts) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) {
+      lower.pop();
+    }
+    lower.push(p);
+  }
+
+  const upper = [];
+  for (let i = pts.length - 1; i >= 0; i--) {
+    const p = pts[i];
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) {
+      upper.pop();
+    }
+    upper.push(p);
+  }
+
+  upper.pop();
+  lower.pop();
+  return lower.concat(upper);
 }
 
 function renderGrid() {
   if (!map) return;
 
-  const hour = Number(hourSlider.value);
+  const startHour = Number(hourStart.value);
+  const endHour = Number(hourEnd.value);
   const bounds = map.getBounds();
-  const latMin = bounds.getSouth();
-  const latMax = bounds.getNorth();
-  const lonMin = bounds.getWest();
-  const lonMax = bounds.getEast();
+  const eps = getEpsilon();
+  const minPts = getMinPts();
 
-  const cell = getCellSize();
+  // Filter points by hour range (use full dataset for stable clustering)
+  const filteredPoints = currentPoints.filter(p => p.hour >= startHour && p.hour <= endHour);
 
-  // Filter points by current hour
-  const filteredPoints = currentPoints.filter(p => p.hour === hour);
+  // Project points once for DBSCAN
+  const points = filteredPoints.map(p => ({
+    ...p,
+    __proj: L.CRS.EPSG3857.project(L.latLng(p.lat, p.lon))
+  }));
 
-  // Calculate count per cell
-  const counts = new Map();
-
-  let inView = 0;
-
-  for (const p of filteredPoints) {
-    if (p.lat < latMin || p.lat > latMax || p.lon < lonMin || p.lon > lonMax) continue;
-    inView++;
-
-    const i = Math.floor((p.lat - latMin) / cell);
-    const j = Math.floor((p.lon - lonMin) / cell);
-    const key = `${i},${j}`;
-    counts.set(key, (counts.get(key) || 0) + 1);
-  }
-
-  // Find max for opacity normalization
-  let maxCount = 0;
-  for (const v of counts.values()) maxCount = Math.max(maxCount, v);
+  const { clusters, noise } = dbscan(points, eps, minPts);
 
   // Clear old layer
   gridLayer.clearLayers();
 
-  // Render rectangles per cell
-  for (const [key, c] of counts.entries()) {
-    const [iStr, jStr] = key.split(",");
-    const i = Number(iStr);
-    const j = Number(jStr);
+  // Cluster rendering (convex hull only)
+  let maxSize = 0;
+  for (const c of clusters) maxSize = Math.max(maxSize, c.length);
 
-    const south = latMin + i * cell;
-    const north = south + cell;
-    const west  = lonMin + j * cell;
-    const east  = west + cell;
+  for (const c of clusters) {
+    if (c.length < 3) continue;
 
-    const opacity = maxCount > 0 ? (0.10 + 0.70 * (c / maxCount)) : 0.2;
+    const ratio = maxSize > 0 ? c.length / maxSize : 0;
+    let color = "#3388ff";
+    if (ratio > 0.7) color = "#ff4444";
+    else if (ratio > 0.4) color = "#ff9944";
+    else if (ratio > 0.2) color = "#ffdd44";
 
-    // Color based on intensity (heatmap-like)
-    let color = "#3388ff"; // blue
-    if (c / maxCount > 0.7) color = "#ff4444"; // red (hot)
-    else if (c / maxCount > 0.4) color = "#ff9944"; // orange (warm)
-    else if (c / maxCount > 0.2) color = "#ffdd44"; // yellow (medium)
-
-    const rect = L.rectangle([[south, west], [north, east]], {
-      weight: 1,
-      color: color,
-      fill: true,
+    const hull = convexHull(c).map(p => [p.lat, p.lon]);
+    const polygon = L.polygon(hull, {
+      color,
       fillColor: color,
-      fillOpacity: opacity
+      fillOpacity: 0.18,
+      weight: 2
     });
-
-    rect.bindTooltip(`count: ${c}`, { sticky: true });
-    rect.addTo(gridLayer);
+    polygon.bindTooltip(`convex hull size: ${c.length}`, { sticky: true });
+    polygon.addTo(gridLayer);
   }
 
-  updateTop5(counts, latMin, lonMin, cell);
+  // Noise points (optional small dots)
+  for (const p of noise) {
+    if (!bounds.contains([p.lat, p.lon])) continue;
+    const dot = L.circleMarker([p.lat, p.lon], {
+      radius: 2,
+      color: "#999",
+      weight: 1,
+      opacity: 0.8,
+      fillOpacity: 0.4
+    });
+    dot.addTo(gridLayer);
+  }
+
+  updateTopHotspots(clusters);
 
   statsEl.textContent =
-    `hour=${hour}, total=${currentPoints.length}, filtered=${filteredPoints.length}, inView=${inView}, cells=${counts.size}, max=${maxCount}`;
+    `hour=${startHour}-${endHour}, total=${currentPoints.length}, filtered=${filteredPoints.length}, clusters=${clusters.length}, noise=${noise.length}`;
 }
 
 // ============================================================================
 // TOP-5 HOTSPOT
 // ============================================================================
 
-function updateTop5(counts, latMin, lonMin, cell) {
-  const arr = Array.from(counts.entries())
-    .map(([key, c]) => {
-      const [iStr, jStr] = key.split(",");
-      const i = Number(iStr);
-      const j = Number(jStr);
-      const latC = latMin + (i + 0.5) * cell;
-      const lonC = lonMin + (j + 0.5) * cell;
-      return { key, c, latC, lonC };
+function getHotspotCount() {
+  return Number(hotspotSlider?.value || 5);
+}
+
+function updateTopHotspots(clusters) {
+  const limit = getHotspotCount();
+  const arr = clusters
+    .map((c, idx) => {
+      const latC = c.reduce((s, p) => s + p.lat, 0) / c.length;
+      const lonC = c.reduce((s, p) => s + p.lon, 0) / c.length;
+      return { key: idx, c: c.length, latC, lonC };
     })
     .sort((a, b) => b.c - a.c)
-    .slice(0, 5);
+    .slice(0, limit);
 
   top5El.innerHTML = "";
   
@@ -320,7 +417,7 @@ function updateTop5(counts, latMin, lonMin, cell) {
     const li = document.createElement("li");
     li.innerHTML = `
       <button style="width:100%; text-align:left;">
-        <strong>${h.c}</strong> activities @ (${fmt(h.latC, 5)}, ${fmt(h.lonC, 5)})
+        <strong>${h.c}</strong> points @ (${fmt(h.latC, 5)}, ${fmt(h.lonC, 5)})
       </button>
     `;
 
@@ -336,11 +433,13 @@ function updateTop5(counts, latMin, lonMin, cell) {
 // UI EVENT HANDLERS
 // ============================================================================
 
-async function setHour(hour) {
-  hourLabel.textContent = String(hour);
+async function setHourRange() {
+  const startHour = Number(hourStart.value);
+  const endHour = Number(hourEnd.value);
+  hourLabel.textContent = `${startHour}–${endHour}`;
 
-  if (currentDataSource === "demo") {
-    const data = await fetchPointsByHour(hour);
+  if (currentDataSource === "demo" && currentPoints.length === 0) {
+    const data = await fetchAllPoints();
     center = data.center || center;
   }
 
@@ -356,15 +455,35 @@ function fitToData() {
 }
 
 function bindUI() {
-  // Hour slider
-  hourSlider.addEventListener("input", async (e) => {
-    const hour = Number(e.target.value);
-    await setHour(hour);
+  // Hour range sliders
+  hourStart.addEventListener("input", async () => {
+    if (Number(hourStart.value) > Number(hourEnd.value)) {
+      hourEnd.value = hourStart.value;
+    }
+    await setHourRange();
+  });
+
+  hourEnd.addEventListener("input", async () => {
+    if (Number(hourEnd.value) < Number(hourStart.value)) {
+      hourStart.value = hourEnd.value;
+    }
+    await setHourRange();
   });
 
   // Cell size slider
-  cellSlider.addEventListener("input", () => {
-    cellLabel.textContent = Number(cellSlider.value).toFixed(3);
+  epsSlider.addEventListener("input", () => {
+    epsLabel.textContent = epsSlider.value;
+    renderGrid();
+  });
+
+  minPtsSlider.addEventListener("input", () => {
+    minPtsLabel.textContent = minPtsSlider.value;
+    renderGrid();
+  });
+
+  // Hotspot count slider
+  hotspotSlider.addEventListener("input", () => {
+    hotspotLabel.textContent = hotspotSlider.value;
     renderGrid();
   });
 
@@ -395,8 +514,10 @@ function bindUI() {
   });
 
   // Init labels
-  hourLabel.textContent = hourSlider.value;
-  cellLabel.textContent = Number(cellSlider.value).toFixed(3);
+  hourLabel.textContent = `${hourStart.value}–${hourEnd.value}`;
+  epsLabel.textContent = epsSlider.value;
+  minPtsLabel.textContent = minPtsSlider.value;
+  hotspotLabel.textContent = hotspotSlider.value;
 }
 
 // ============================================================================
@@ -407,8 +528,7 @@ function bindUI() {
   bindUI();
 
   // Load initial hour (demo data)
-  const initHour = Number(hourSlider.value);
-  await setHour(initHour);
+  await setHourRange();
 
   initMap();
   fitToData();

@@ -24,9 +24,9 @@ A real-time Web GIS application for visualizing urban activity patterns
 
 **Main Features:**
 - Interactive map visualization
-- Temporal analysis (0-23 hours)
-- Spatial density grid (heatmap)
-- Top-5 hotspots detection
+- Temporal analysis (hour range)
+- DBSCAN clustering (hotspot)
+- Convex hull cluster boundary
 - Real-time POI data integration
 
 ---
@@ -60,9 +60,9 @@ How to visualize urban activity patterns in spatio-temporal context using free, 
 **Approach:**
 
 1. Data Collection: OpenStreetMap via Overpass API
-2. Spatial Analysis: Grid-based binning for density
-3. Temporal Analysis: Time-based filtering (0-23h)
-4. Visualization: Interactive heatmap
+2. Spatial Analysis: DBSCAN clustering
+3. Temporal Analysis: Hour-range filtering (0-23)
+4. Visualization: Convex hull per cluster
 5. Performance: Caching strategy
 
 ---
@@ -91,44 +91,38 @@ Parameters:
 
 # Spatial Analysis
 
-**Grid-Based Binning Algorithm**
+**DBSCAN Clustering + Convex Hull**
 
-Concept: Divide map into uniform grid cells and count points per cell
+Concept: Group nearby points into clusters, then wrap each cluster boundary
 
 Steps:
-1. Define grid cell size (0.01° ≈ 1km)
-2. Calculate grid indices for each point
-3. Count points in each cell
-4. Identify cells with highest activity
+1. Project points to meters (EPSG:3857)
+2. DBSCAN with epsilon (meters) and minPts
+3. Label clusters & noise points
+4. Compute convex hull for each cluster
 
 Advantages:
-- Fast computation O(n)
-- Scalable for large datasets
-- Easy to visualize
+- No need for grid size
+- Detects arbitrary-shaped hotspots
+- Clear cluster boundaries
 
 ---
 
-# Algorithm: Activity Density
+# Algorithm: DBSCAN + Convex Hull
 
-**Complexity: O(n + k log k)**
+**Complexity: O(n²) (naive), acceptable for demo scale**
 
 ```js
-function computeActivityGrid(points, bounds, cellSize, hour) {
-  // Step 1: Filter by hour → O(n)
-  let filtered = points.filter(p => p.hour === hour);
-  
-  // Step 2: Binning → O(n)
-  let counts = {};
-  for (let p of filtered) {
-    let i = Math.floor((p.lat - bounds.latMin) / cellSize);
-    let j = Math.floor((p.lon - bounds.lonMin) / cellSize);
-    let key = i + ',' + j;
-    counts[key] = (counts[key] || 0) + 1;
-  }
-  
-  // Step 3: Sort for Top-5 → O(k log k)
-  let cells = Object.entries(counts).sort((a,b) => b[1] - a[1]);
-  return cells.slice(0, 5);
+function cluster(points, eps, minPts) {
+  // 1) DBSCAN: find clusters by distance
+  const { clusters, noise } = dbscan(points, eps, minPts);
+
+  // 2) For each cluster, compute convex hull
+  const hulls = clusters
+    .filter(c => c.length >= 3)
+    .map(c => convexHull(c));
+
+  return { clusters, hulls, noise };
 }
 ```
 
@@ -136,39 +130,35 @@ function computeActivityGrid(points, bounds, cellSize, hour) {
 
 # Temporal Analysis
 
-**Time-Based Pattern Detection**
+**Hour-Range Filtering**
 
 Approach:
-- Assign activity hour to each POI
-- Filter data by selected hour (0-23)
-- Detect peak/off-peak patterns
+- Assign activity hour to each POI (synthetic for demo)
+- Filter data by selected hour range (0-23)
+- Observe cluster changes across time
 - Dynamic visualization update
 
-Activity Distribution:
-- Morning peak: 8-10 (15%)
-- Evening peak: 17-20 (15%)
-- Midday: 11-16 (20%)
-- Other hours: distributed (50%)
+Default Range: 07–18
 
 ---
 
 # Visualization
 
-**Color Normalization Strategy**
+**Cluster Styling Strategy**
 
 ```js
-opacity = 0.10 + 0.70 * (count / maxCount);
+ratio = clusterSize / maxClusterSize;
 
-if (count/maxCount > 0.7)      color = "red";     // Very high
-else if (count/maxCount > 0.4) color = "orange";  // High
-else if (count/maxCount > 0.2) color = "yellow";  // Medium
-else                            color = "blue";    // Low
+if (ratio > 0.7)      color = "red";
+else if (ratio > 0.4) color = "orange";
+else if (ratio > 0.2) color = "yellow";
+else                  color = "blue";
 ```
 
 Characteristics:
-- Relative to viewport (not absolute)
-- Adapts dynamically to zoom level
-- Highlights hotspot areas
+- Convex hull polygons per cluster
+- Color reflects relative cluster size
+- Stable across zoom/pan
 
 ---
 
@@ -194,18 +184,17 @@ Results:
 # Spatio-Temporal Integration
 
 **Spatial Dimension:**
-- Grid cells with lat/lon bounds
 - Distance-based queries (radius)
-- Viewport filtering
-- Hotspot detection (Top-5)
+- DBSCAN clustering (epsilon, minPts)
+- Convex hull hotspot boundaries
 
 **Temporal Dimension:**
-- Hour slider (0-23)
-- Dynamic filtering by hour
-- Pattern recognition (peak/off-peak)
+- Hour range sliders (0-23)
+- Dynamic filtering by range
+- Visual comparison across time
 - Real-time updates
 
-**Integration** = Grid density changes dynamically based on selected time
+**Integration** = Cluster shapes change dynamically based on selected time
 
 ---
 
@@ -230,18 +219,18 @@ Results:
 
 **Demo Data Mode:**
 1. Load 3000 synthetic points
-2. Slide time (0-23 hours)
-3. Observe density changes
+2. Set hour range (0-23)
+3. Observe cluster changes
 4. Zoom/pan map
-5. Click Top-5 hotspots
+5. Click hotspot list
 
 **Real POI Mode:**
 1. Set location (click/input)
 2. Select categories
 3. Set radius (default 3km)
 4. Fetch from Overpass
-5. Apply time filter
-6. Analyze patterns
+5. Apply hour-range filter
+6. Analyze clusters
 
 ---
 
@@ -253,9 +242,9 @@ Results:
 - Runs on localhost
 
 **2. Performance**
-- O(n + k log k) algorithm efficiency
+- DBSCAN clustering (naive O(n²))
 - Caching reduces API load
-- Viewport-only rendering
+- Suitable for demo-scale data
 
 **3. Flexibility**
 - Dual data sources (demo/real)
@@ -267,15 +256,14 @@ Results:
 # Limitations & Future Work
 
 **Current Limitations:**
-- Synthetic time distribution (not real opening hours)
+- Synthetic time distribution (not real activity)
+- DBSCAN parameter sensitivity
 - In-memory cache (lost on restart)
-- Single user (no multi-tenancy)
 
 **Proposed Improvements:**
-- Parse actual opening_hours from OSM tags
+- Integrate real temporal data sources
+- Spatial indexing for faster clustering
 - Persistent cache (Redis/Database)
-- Historical data tracking
-- Mobile-responsive UI
 - Export to GeoJSON/CSV
 
 ---
@@ -283,9 +271,9 @@ Results:
 # Key Contributions
 
 **Methodological:**
-- Grid-based binning for spatial analysis
-- Time-based filtering for temporal patterns
-- Color normalization for visualization
+- DBSCAN clustering for spatial analysis
+- Convex hull for cluster boundary
+- Hour-range filtering for temporal patterns
 - Caching strategy for performance
 
 **Practical:**

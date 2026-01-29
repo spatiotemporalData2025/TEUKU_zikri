@@ -82,7 +82,9 @@ const CACHE_TTL = 3600000; // 1 hour
 
 /**
  * Fetch POI from Overpass API with specific categories
- * Categories: convenience, cafe, restaurant, station
+ * Categories: convenience, cafe, restaurant, station,
+ * supermarket, pharmacy, hospital, school, university,
+ * bank, atm, fuel, parking, hotel, bus_stop, park, mall
  */
 app.get("/api/poi", async (req, res) => {
   try {
@@ -117,6 +119,32 @@ app.get("/api/poi", async (req, res) => {
       } else if (cat === "station") {
         queries.push(`node["railway"="station"](around:${radius},${lat},${lon});`);
         queries.push(`node["public_transport"="station"](around:${radius},${lat},${lon});`);
+      } else if (cat === "supermarket") {
+        queries.push(`node["shop"="supermarket"](around:${radius},${lat},${lon});`);
+      } else if (cat === "pharmacy") {
+        queries.push(`node["amenity"="pharmacy"](around:${radius},${lat},${lon});`);
+      } else if (cat === "hospital") {
+        queries.push(`node["amenity"="hospital"](around:${radius},${lat},${lon});`);
+      } else if (cat === "school") {
+        queries.push(`node["amenity"="school"](around:${radius},${lat},${lon});`);
+      } else if (cat === "university") {
+        queries.push(`node["amenity"="university"](around:${radius},${lat},${lon});`);
+      } else if (cat === "bank") {
+        queries.push(`node["amenity"="bank"](around:${radius},${lat},${lon});`);
+      } else if (cat === "atm") {
+        queries.push(`node["amenity"="atm"](around:${radius},${lat},${lon});`);
+      } else if (cat === "fuel") {
+        queries.push(`node["amenity"="fuel"](around:${radius},${lat},${lon});`);
+      } else if (cat === "parking") {
+        queries.push(`node["amenity"="parking"](around:${radius},${lat},${lon});`);
+      } else if (cat === "hotel") {
+        queries.push(`node["tourism"="hotel"](around:${radius},${lat},${lon});`);
+      } else if (cat === "bus_stop") {
+        queries.push(`node["highway"="bus_stop"](around:${radius},${lat},${lon});`);
+      } else if (cat === "park") {
+        queries.push(`node["leisure"="park"](around:${radius},${lat},${lon});`);
+      } else if (cat === "mall") {
+        queries.push(`node["shop"="mall"](around:${radius},${lat},${lon});`);
       }
     }
 
