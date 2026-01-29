@@ -27,17 +27,14 @@
         <h2>Data Source</h2>
         <div class="toggle-group">
           <label>
-            <input type="radio" name="dataSource" value="demo" checked />
-            Demo Data (offline)
-          </label>
-          <label>
-            <input type="radio" name="dataSource" value="overpass" />
+            <input type="radio" name="dataSource" value="overpass" checked />
             Real POI (Overpass API)
           </label>
         </div>
       </div>
 
-      <div id="overpassControls" class="card" style="display: none;">
+
+      <div id="overpassControls" class="card" style="display: block;">
         <h2>POI Fetch</h2>
         <button id="useMyLocationBtn" class="location-btn">📍 Use My Location</button>
         <p class="muted small" id="locationStatus"></p>
@@ -125,16 +122,6 @@
         <p class="muted small" id="stats"></p>
       </div>
 
-      <div class="card">
-        <h2>How to Demo</h2>
-        <ul class="small">
-          <li>Select <b>Demo Data</b> for quick offline testing.</li>
-          <li>Select <b>Real POI</b> to fetch from Overpass API (requires internet).</li>
-          <li>Slide hour → heatmap changes.</li>
-          <li>Zoom/move map → grid recalculates on viewport.</li>
-          <li>Click Top-5 item → map centers to hotspot.</li>
-        </ul>
-      </div>
     </aside>
 
     <main id="mapWrap">
@@ -147,6 +134,8 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
+
+  <script src="https://unpkg.com/opening_hours@3.6.0/dist/opening_hours.min.js"></script>
 
   <script src="main.js"></script>
 </body>

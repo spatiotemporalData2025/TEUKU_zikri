@@ -30,8 +30,9 @@ const useMyLocationBtn = document.getElementById("useMyLocationBtn");
 const locationStatus = document.getElementById("locationStatus");
 
 let currentPoints = [];
-let currentDataSource = "demo"; // "demo" or "overpass"
+let currentDataSource = "overpass"; // "overpass" only
 let center = { lat: 35.681236, lon: 139.767125 };
+const openingHoursCache = new Map();
 
 function fmt(n, d = 5) {
   return Number(n).toFixed(d);
@@ -42,16 +43,6 @@ function fmt(n, d = 5) {
 // DATA FETCHING
 // ============================================================================
 
-async function fetchAllPoints() {
-  const res = await fetch(`/api/points`);
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || "Failed to fetch points");
-  }
-  const data = await res.json();
-  currentPoints = data.points;
-  return data;
-}
 
 async function fetchPOIFromOverpass() {
   const lat = document.getElementById("poiLat").value;
@@ -79,24 +70,16 @@ async function fetchPOIFromOverpass() {
 
     const data = await res.json();
     
-    // Convert POI to points with synthetic hour distribution
-    currentPoints = data.poi.map((poi, idx) => {
-      // Synthetic hour distribution (weighted by typical activity patterns)
-      // Peaks at 8-10 and 17-20
-      const rand = (idx * 7919) % 100;
-      let hour;
-      if (rand < 15) hour = 8 + (rand % 3);       // 15% at 8-10
-      else if (rand < 30) hour = 17 + (rand % 4); // 15% at 17-20
-      else if (rand < 50) hour = 11 + (rand % 6); // 20% at 11-16
-      else hour = rand % 24;                       // rest distributed
-
+    // Convert POI to points (keep opening_hours for temporal filtering)
+    currentPoints = data.poi.map((poi) => {
       return {
         id: poi.id,
         lat: poi.lat,
         lon: poi.lon,
-        hour: hour,
+        hour: null,
         category: poi.category,
-        name: poi.name
+        name: poi.name,
+        opening_hours: poi.opening_hours || null
       };
     });
 
@@ -115,6 +98,7 @@ async function fetchPOIFromOverpass() {
     fetchPOIBtn.disabled = false;
   }
 }
+
 
 // ============================================================================
 // GEOLOCATION (Use My Location)
@@ -217,6 +201,7 @@ function initMap() {
     }
   });
 }
+
 
 // ============================================================================
 // GRID RENDERING & ACTIVITY DENSITY
@@ -331,7 +316,7 @@ function renderGrid() {
   const minPts = getMinPts();
 
   // Filter points by hour range (use full dataset for stable clustering)
-  const filteredPoints = currentPoints.filter(p => p.hour >= startHour && p.hour <= endHour);
+  const filteredPoints = currentPoints.filter(p => isPointActiveInRange(p, startHour, endHour));
 
   // Project points once for DBSCAN
   const points = filteredPoints.map(p => ({
@@ -395,6 +380,35 @@ function getHotspotCount() {
   return Number(hotspotSlider?.value || 5);
 }
 
+function parseOpeningHours(value) {
+  if (!value || typeof window.opening_hours !== "function") return null;
+  if (openingHoursCache.has(value)) return openingHoursCache.get(value);
+  try {
+    const oh = new window.opening_hours(value);
+    openingHoursCache.set(value, oh);
+    return oh;
+  } catch {
+    openingHoursCache.set(value, null);
+    return null;
+  }
+}
+
+function isPointActiveInRange(point, startHour, endHour) {
+  const oh = parseOpeningHours(point.opening_hours);
+  if (!oh) {
+    // If no opening_hours available, include by default
+    return true;
+  }
+
+  const now = new Date();
+  for (let h = startHour; h <= endHour; h++) {
+    const d = new Date(now);
+    d.setHours(h, 0, 0, 0);
+    if (oh.getState(d)) return true;
+  }
+  return false;
+}
+
 function updateTopHotspots(clusters) {
   const limit = getHotspotCount();
   const arr = clusters
@@ -438,11 +452,6 @@ async function setHourRange() {
   const endHour = Number(hourEnd.value);
   hourLabel.textContent = `${startHour}–${endHour}`;
 
-  if (currentDataSource === "demo" && currentPoints.length === 0) {
-    const data = await fetchAllPoints();
-    center = data.center || center;
-  }
-
   renderGrid();
 }
 
@@ -455,6 +464,9 @@ function fitToData() {
 }
 
 function bindUI() {
+  // Ensure Overpass controls visible
+  overpassControls.style.display = "block";
+
   // Hour range sliders
   hourStart.addEventListener("input", async () => {
     if (Number(hourStart.value) > Number(hourEnd.value)) {
@@ -491,15 +503,11 @@ function bindUI() {
   refreshBtn.addEventListener("click", () => renderGrid());
   fitBtn.addEventListener("click", () => fitToData());
 
-  // Data source toggle
+  // Data source toggle (overpass only)
   dataSourceRadios.forEach(radio => {
     radio.addEventListener("change", (e) => {
       currentDataSource = e.target.value;
-      overpassControls.style.display = currentDataSource === "overpass" ? "block" : "none";
-      
-      if (currentDataSource === "demo") {
-        poiStatus.textContent = "";
-      }
+      overpassControls.style.display = "block";
     });
   });
 
@@ -512,6 +520,7 @@ function bindUI() {
   useMyLocationBtn.addEventListener("click", () => {
     useMyLocation();
   });
+
 
   // Init labels
   hourLabel.textContent = `${hourStart.value}–${hourEnd.value}`;
@@ -527,7 +536,7 @@ function bindUI() {
 (async function main() {
   bindUI();
 
-  // Load initial hour (demo data)
+  // Load initial hour
   await setHourRange();
 
   initMap();

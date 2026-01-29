@@ -133,9 +133,9 @@ function cluster(points, eps, minPts) {
 **Hour-Range Filtering**
 
 Approach:
-- Assign activity hour to each POI (synthetic for demo)
-- Filter data by selected hour range (0-23)
-- Observe cluster changes across time
+- Use OSM opening_hours (when available)
+- Filter POI by selected hour range (0-23)
+- Include POI without opening_hours by default
 - Dynamic visualization update
 
 Default Range: 07–18
@@ -217,13 +217,6 @@ Results:
 
 # Demo Workflow
 
-**Demo Data Mode:**
-1. Load 3000 synthetic points
-2. Set hour range (0-23)
-3. Observe cluster changes
-4. Zoom/pan map
-5. Click hotspot list
-
 **Real POI Mode:**
 1. Set location (click/input)
 2. Select categories
@@ -247,16 +240,16 @@ Results:
 - Suitable for demo-scale data
 
 **3. Flexibility**
-- Dual data sources (demo/real)
 - Multiple POI categories
 - Adjustable parameters
+- Location-based queries
 
 ---
 
 # Limitations & Future Work
 
 **Current Limitations:**
-- Synthetic time distribution (not real activity)
+- opening_hours coverage is incomplete
 - DBSCAN parameter sensitivity
 - In-memory cache (lost on restart)
 

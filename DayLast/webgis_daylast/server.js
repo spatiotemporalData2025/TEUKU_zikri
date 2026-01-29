@@ -76,7 +76,50 @@ app.get("/api/points", (req, res) => {
 // OVERPASS API INTEGRATION (Real POI Data)
 // ============================================================================
 
-const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
+const OVERPASS_URLS = (process.env.OVERPASS_URLS || "")
+  .split(",")
+  .map(s => s.trim())
+  .filter(Boolean);
+
+// Public Overpass instances (best-effort; can be overridden via OVERPASS_URLS)
+if (OVERPASS_URLS.length === 0) {
+  OVERPASS_URLS.push(
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.nchc.org.tw/api/interpreter"
+  );
+}
+
+async function postOverpass(overpassQuery, { timeoutMs = 45000 } = {}) {
+  let lastError = null;
+  for (const url of OVERPASS_URLS) {
+    try {
+      return await axios.post(url, overpassQuery, {
+        headers: { "Content-Type": "text/plain" },
+        timeout: timeoutMs
+      });
+    } catch (err) {
+      lastError = err;
+
+      const status = err.response?.status;
+      const code = err.code;
+      const retryable =
+        status === 429 ||
+        status === 502 ||
+        status === 503 ||
+        status === 504 ||
+        code === "ECONNABORTED" ||
+        code === "ETIMEDOUT" ||
+        code === "ECONNRESET" ||
+        code === "EAI_AGAIN" ||
+        code === "ENOTFOUND";
+      if (!retryable) break;
+
+      console.warn(`Overpass ${url} failed (${status || code || "error"}), trying next...`);
+    }
+  }
+  throw lastError;
+}
 const cache = new Map(); // In-memory cache
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -158,10 +201,7 @@ app.get("/api/poi", async (req, res) => {
 
     console.log(`→ Fetching Overpass: ${lat},${lon} r=${radius} cats=${categories}`);
 
-    const response = await axios.post(OVERPASS_URL, overpassQuery, {
-      headers: { "Content-Type": "text/plain" },
-      timeout: 30000
-    });
+    const response = await postOverpass(overpassQuery, { timeoutMs: 45000 });
 
     const elements = response.data.elements || [];
     const poi = elements.map((el, idx) => ({
