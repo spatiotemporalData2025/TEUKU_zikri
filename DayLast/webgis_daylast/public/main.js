@@ -1,5 +1,6 @@
 let map;
 let gridLayer = L.layerGroup();
+let voronoiLayer = L.layerGroup();
 let userMarker = null; // Marker for user location
 
 const hourStart = document.getElementById("hourStart");
@@ -29,8 +30,19 @@ const poiStatus = document.getElementById("poiStatus");
 const useMyLocationBtn = document.getElementById("useMyLocationBtn");
 const locationStatus = document.getElementById("locationStatus");
 
+const mapModeRadios = document.querySelectorAll('input[name="mapMode"]');
+const urbanControls = document.getElementById("urbanControls");
+const proximityControls = document.getElementById("proximityControls");
+
+const voronoiEnable = document.getElementById("voronoiEnable");
+const voronoiMaxCells = document.getElementById("voronoiMaxCells");
+const voronoiMaxCellsLabel = document.getElementById("voronoiMaxCellsLabel");
+const voronoiStatus = document.getElementById("voronoiStatus");
+const voronoiTop = document.getElementById("voronoiTop");
+
 let currentPoints = [];
 let currentDataSource = "overpass"; // "overpass" only
+let currentMapMode = "proximity"; // "urban" | "proximity"
 let center = { lat: 35.681236, lon: 139.767125 };
 const openingHoursCache = new Map();
 
@@ -38,17 +50,28 @@ function fmt(n, d = 5) {
   return Number(n).toFixed(d);
 }
 
+function hashColor(input) {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash << 5) - hash + input.charCodeAt(i);
+    hash |= 0;
+  }
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 65%, 45%)`;
+}
+
 
 // ============================================================================
 // DATA FETCHING
 // ============================================================================
 
-
 async function fetchPOIFromOverpass() {
   const lat = document.getElementById("poiLat").value;
   const lon = document.getElementById("poiLon").value;
   const radius = document.getElementById("poiRadius").value;
-  
+  const radiusValue = Number(radius) || 0;
+  const fetchRadius = Math.round(radiusValue * Math.SQRT2);
+
   const categoryCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
   const categories = Array.from(categoryCheckboxes).map(cb => cb.value).join(",");
 
@@ -61,15 +84,15 @@ async function fetchPOIFromOverpass() {
     poiStatus.textContent = "⏳ Fetching from Overpass API...";
     fetchPOIBtn.disabled = true;
 
-    const res = await fetch(`/api/poi?lat=${lat}&lon=${lon}&radius=${radius}&categories=${categories}`);
-    
+    const res = await fetch(`/api/poi?lat=${lat}&lon=${lon}&radius=${fetchRadius}&categories=${categories}`);
+
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.message || "Failed to fetch POI");
     }
 
     const data = await res.json();
-    
+
     // Convert POI to points (keep opening_hours for temporal filtering)
     currentPoints = data.poi.map((poi) => {
       return {
@@ -87,8 +110,8 @@ async function fetchPOIFromOverpass() {
     map.setView([center.lat, center.lon], 13);
 
     poiStatus.textContent = `✓ Loaded ${data.count} POI (${data.cached ? 'cached' : 'fresh'})`;
-    
-    renderGrid();
+
+    renderByMode();
     fitToData();
 
   } catch (error) {
@@ -188,9 +211,10 @@ function initMap() {
   }).addTo(map);
 
   gridLayer.addTo(map);
+  voronoiLayer.addTo(map);
 
-  // Re-render grid when user moves/zooms
-  map.on("moveend zoomend", () => renderGrid());
+  // Re-render when user moves/zooms
+  map.on("moveend zoomend", () => renderByMode());
 
   // Click to set location for POI fetch
   map.on("click", (e) => {
@@ -373,6 +397,261 @@ function renderGrid() {
 }
 
 // ============================================================================
+// PROXIMITY (VORONOI)
+// ============================================================================
+
+function getVoronoiMaxCells() {
+  return Number(voronoiMaxCells?.value || 200);
+}
+
+function renderVoronoi() {
+  if (!map) return;
+
+  if (!voronoiEnable?.checked) {
+    voronoiLayer.clearLayers();
+    if (voronoiStatus) voronoiStatus.textContent = "Disabled";
+    if (voronoiTop) voronoiTop.innerHTML = "";
+    return;
+  }
+
+  const startHour = Number(hourStart.value);
+  const endHour = Number(hourEnd.value);
+
+  let points = currentPoints.filter(p => isPointActiveInRange(p, startHour, endHour));
+
+  if (!points.length) {
+    voronoiLayer.clearLayers();
+    if (voronoiStatus) voronoiStatus.textContent = "No points in view";
+    if (voronoiTop) voronoiTop.innerHTML = "";
+    return;
+  }
+
+  const poiLatValue = Number(document.getElementById("poiLat")?.value);
+  const poiLonValue = Number(document.getElementById("poiLon")?.value);
+  const poiRadiusValue = Number(document.getElementById("poiRadius")?.value) || 0;
+  const hasPoiBounds = Number.isFinite(poiLatValue) && Number.isFinite(poiLonValue) && poiRadiusValue > 0;
+  const displayBounds = hasPoiBounds
+    ? L.latLng(poiLatValue, poiLonValue).toBounds(poiRadiusValue * 2)
+    : map.getBounds();
+  const computeBounds = hasPoiBounds
+    ? L.latLng(poiLatValue, poiLonValue).toBounds(poiRadiusValue * 2 * Math.SQRT2)
+    : map.getBounds();
+
+  const maxCells = getVoronoiMaxCells();
+  if (points.length > maxCells) {
+    points = points
+      .slice()
+      .sort((a, b) => {
+        const aId = a.id ?? 0;
+        const bId = b.id ?? 0;
+        if (aId !== bId) return aId - bId;
+        if (a.lat !== b.lat) return a.lat - b.lat;
+        return a.lon - b.lon;
+      });
+    const step = Math.ceil(points.length / maxCells);
+    points = points.filter((_, i) => i % step === 0);
+  }
+
+  const project = (p) => L.CRS.EPSG3857.project(L.latLng(p.lat, p.lon));
+  const pts = points.map(p => {
+    const pr = project(p);
+    return [pr.x, pr.y];
+  });
+
+  const swDesired = L.CRS.EPSG3857.project(displayBounds.getSouthWest());
+  const neDesired = L.CRS.EPSG3857.project(displayBounds.getNorthEast());
+  const desiredMinX = Math.min(swDesired.x, neDesired.x);
+  const desiredMaxX = Math.max(swDesired.x, neDesired.x);
+  const desiredMinY = Math.min(swDesired.y, neDesired.y);
+  const desiredMaxY = Math.max(swDesired.y, neDesired.y);
+
+  const swCompute = L.CRS.EPSG3857.project(computeBounds.getSouthWest());
+  const neCompute = L.CRS.EPSG3857.project(computeBounds.getNorthEast());
+  let minX = Math.min(swCompute.x, neCompute.x);
+  let maxX = Math.max(swCompute.x, neCompute.x);
+  let minY = Math.min(swCompute.y, neCompute.y);
+  let maxY = Math.max(swCompute.y, neCompute.y);
+
+  const delaunay = d3.Delaunay.from(pts);
+  const voronoi = delaunay.voronoi([minX, minY, maxX, maxY]);
+
+  voronoiLayer.clearLayers();
+
+  const clipPolygonToBounds = (poly, b) => {
+    let output = poly;
+    const edges = [
+      { inside: (p) => p[0] >= b.minX, intersect: (s, e) => intersectX(s, e, b.minX) },
+      { inside: (p) => p[0] <= b.maxX, intersect: (s, e) => intersectX(s, e, b.maxX) },
+      { inside: (p) => p[1] >= b.minY, intersect: (s, e) => intersectY(s, e, b.minY) },
+      { inside: (p) => p[1] <= b.maxY, intersect: (s, e) => intersectY(s, e, b.maxY) }
+    ];
+
+    for (const edge of edges) {
+      const input = output;
+      output = [];
+      for (let i = 0; i < input.length; i++) {
+        const s = input[i];
+        const e = input[(i + 1) % input.length];
+        const sInside = edge.inside(s);
+        const eInside = edge.inside(e);
+        if (sInside && eInside) {
+          output.push(e);
+        } else if (sInside && !eInside) {
+          output.push(edge.intersect(s, e));
+        } else if (!sInside && eInside) {
+          output.push(edge.intersect(s, e));
+          output.push(e);
+        }
+      }
+      if (output.length === 0) break;
+    }
+
+    return output;
+  };
+
+  const intersectX = (s, e, x) => {
+    const [x1, y1] = s;
+    const [x2, y2] = e;
+    const t = (x - x1) / (x2 - x1);
+    return [x, y1 + t * (y2 - y1)];
+  };
+
+  const intersectY = (s, e, y) => {
+    const [x1, y1] = s;
+    const [x2, y2] = e;
+    const t = (y - y1) / (y2 - y1);
+    return [x1 + t * (x2 - x1), y];
+  };
+
+  const clipBounds = {
+    minX: desiredMinX,
+    maxX: desiredMaxX,
+    minY: desiredMinY,
+    maxY: desiredMaxY
+  };
+
+  const areas = new Array(points.length).fill(0);
+  const visibleIndices = [];
+  let maxArea = 0;
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    if (!displayBounds.contains([p.lat, p.lon])) continue;
+    const cell = voronoi.cellPolygon(i);
+    if (!cell || cell.length < 3) continue;
+    const clipped = clipPolygonToBounds(cell, clipBounds);
+    if (!clipped || clipped.length < 3) continue;
+    let area = 0;
+    for (let j = 0; j < clipped.length; j++) {
+      const [x1, y1] = clipped[j];
+      const [x2, y2] = clipped[(j + 1) % clipped.length];
+      area += x1 * y2 - x2 * y1;
+    }
+    area = Math.abs(area) / 2;
+    areas[i] = area;
+    visibleIndices.push(i);
+    if (area > maxArea) maxArea = area;
+  }
+
+  if (voronoiTop) {
+    voronoiTop.innerHTML = "";
+    const ranked = visibleIndices
+      .map(i => ({
+        i,
+        area: areas[i],
+        name: points[i]?.name || "(unnamed)",
+        category: points[i]?.category || "poi"
+      }))
+      .sort((a, b) => b.area - a.area);
+
+    const maxList = Math.min(ranked.length, 10);
+    for (let idx = 0; idx < maxList; idx++) {
+      const item = ranked[idx];
+      const li = document.createElement("li");
+      li.textContent = `${item.category}: ${item.name}`;
+      voronoiTop.appendChild(li);
+    }
+  }
+
+  for (const i of visibleIndices) {
+    const cell = voronoi.cellPolygon(i);
+    if (!cell || cell.length < 3) continue;
+
+    const clipped = clipPolygonToBounds(cell, clipBounds);
+    if (!clipped || clipped.length < 3) continue;
+
+    const latlngs = clipped.map(([x, y]) => {
+      const ll = L.CRS.EPSG3857.unproject(L.point(x, y));
+      return [ll.lat, ll.lng];
+    });
+
+    const p = points[i];
+    const ratio = maxArea > 0 ? areas[i] / maxArea : 0;
+    const lightness = 90 - ratio * 70;
+    const color = `hsl(210, 90%, ${lightness}%)`;
+
+    const poly = L.polygon(latlngs, {
+      color,
+      weight: 1,
+      fillColor: color,
+      fillOpacity: 0.15 + ratio * 0.45
+    });
+
+    const title = `${p.category || "poi"}: ${p.name || "(unnamed)"}`;
+    poly.bindTooltip(title, { sticky: true });
+    poly.addTo(voronoiLayer);
+  }
+
+  if (voronoiStatus) {
+    voronoiStatus.textContent = `Voronoi cells: ${visibleIndices.length}`;
+  }
+}
+
+function renderByMode() {
+  if (currentMapMode === "proximity") {
+    renderVoronoi();
+    return;
+  }
+
+  renderGrid();
+}
+
+function setMapMode(mode) {
+  currentMapMode = mode === "proximity" ? "proximity" : "urban";
+
+  if (urbanControls) {
+    urbanControls.style.display = currentMapMode === "urban" ? "block" : "none";
+  }
+  if (proximityControls) {
+    proximityControls.style.display = currentMapMode === "proximity" ? "block" : "none";
+  }
+
+  if (currentMapMode === "proximity") {
+    gridLayer.clearLayers();
+    if (statsEl) statsEl.textContent = "";
+    applyProximityDefaults();
+  } else {
+    voronoiLayer.clearLayers();
+    if (voronoiStatus) voronoiStatus.textContent = "Disabled";
+  }
+
+  renderByMode();
+}
+
+function applyProximityDefaults() {
+  const categoryCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+  categoryCheckboxes.forEach(cb => {
+    cb.checked = cb.value === "hospital";
+  });
+
+  if (voronoiEnable) {
+    voronoiEnable.checked = true;
+  }
+  if (voronoiStatus) {
+    voronoiStatus.textContent = "Enabled";
+  }
+}
+
+// ============================================================================
 // TOP-5 HOTSPOT
 // ============================================================================
 
@@ -452,7 +731,7 @@ async function setHourRange() {
   const endHour = Number(hourEnd.value);
   hourLabel.textContent = `${startHour}–${endHour}`;
 
-  renderGrid();
+  renderByMode();
 }
 
 function fitToData() {
@@ -466,6 +745,13 @@ function fitToData() {
 function bindUI() {
   // Ensure Overpass controls visible
   overpassControls.style.display = "block";
+
+  // Map mode toggle
+  mapModeRadios.forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      setMapMode(e.target.value);
+    });
+  });
 
   // Hour range sliders
   hourStart.addEventListener("input", async () => {
@@ -485,22 +771,22 @@ function bindUI() {
   // Cell size slider
   epsSlider.addEventListener("input", () => {
     epsLabel.textContent = epsSlider.value;
-    renderGrid();
+    renderByMode();
   });
 
   minPtsSlider.addEventListener("input", () => {
     minPtsLabel.textContent = minPtsSlider.value;
-    renderGrid();
+    renderByMode();
   });
 
   // Hotspot count slider
   hotspotSlider.addEventListener("input", () => {
     hotspotLabel.textContent = hotspotSlider.value;
-    renderGrid();
+    renderByMode();
   });
 
   // Buttons
-  refreshBtn.addEventListener("click", () => renderGrid());
+  refreshBtn.addEventListener("click", () => renderByMode());
   fitBtn.addEventListener("click", () => fitToData());
 
   // Data source toggle (overpass only)
@@ -521,12 +807,29 @@ function bindUI() {
     useMyLocation();
   });
 
+  // Voronoi controls
+  if (voronoiEnable) {
+    voronoiEnable.addEventListener("change", () => {
+      renderVoronoi();
+    });
+  }
+
+  if (voronoiMaxCells) {
+    voronoiMaxCells.addEventListener("input", () => {
+      voronoiMaxCellsLabel.textContent = voronoiMaxCells.value;
+      renderVoronoi();
+    });
+  }
+
 
   // Init labels
   hourLabel.textContent = `${hourStart.value}–${hourEnd.value}`;
   epsLabel.textContent = epsSlider.value;
   minPtsLabel.textContent = minPtsSlider.value;
   hotspotLabel.textContent = hotspotSlider.value;
+  if (voronoiMaxCells && voronoiMaxCellsLabel) {
+    voronoiMaxCellsLabel.textContent = voronoiMaxCells.value;
+  }
 }
 
 // ============================================================================
@@ -540,8 +843,8 @@ function bindUI() {
   await setHourRange();
 
   initMap();
+  setMapMode(currentMapMode);
   fitToData();
-  renderGrid();
 })().catch(err => {
   alert(err.message || String(err));
   console.error(err);

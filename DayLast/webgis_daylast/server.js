@@ -84,14 +84,16 @@ const OVERPASS_URLS = (process.env.OVERPASS_URLS || "")
 // Public Overpass instances (best-effort; can be overridden via OVERPASS_URLS)
 if (OVERPASS_URLS.length === 0) {
   OVERPASS_URLS.push(
-    "https://overpass-api.de/api/interpreter",
+    "https://overpass.openstreetmap.ru/cgi/interpreter",
+    "https://overpass.nchc.org.tw/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
-    "https://overpass.nchc.org.tw/api/interpreter"
+    "https://overpass-api.de/api/interpreter"
   );
 }
 
-async function postOverpass(overpassQuery, { timeoutMs = 45000 } = {}) {
+async function postOverpass(overpassQuery, { timeoutMs = 90000 } = {}) {
   let lastError = null;
+  const errors = [];
   for (const url of OVERPASS_URLS) {
     try {
       return await axios.post(url, overpassQuery, {
@@ -100,6 +102,12 @@ async function postOverpass(overpassQuery, { timeoutMs = 45000 } = {}) {
       });
     } catch (err) {
       lastError = err;
+      errors.push({
+        url,
+        status: err.response?.status,
+        code: err.code,
+        message: err.message
+      });
 
       const status = err.response?.status;
       const code = err.code;
@@ -118,6 +126,12 @@ async function postOverpass(overpassQuery, { timeoutMs = 45000 } = {}) {
       console.warn(`Overpass ${url} failed (${status || code || "error"}), trying next...`);
     }
   }
+  if (errors.length) {
+    const summary = errors
+      .map(e => `${e.url} (${e.status || e.code || "error"})`)
+      .join("; ");
+    throw new Error(`All Overpass instances failed: ${summary}`);
+  }
   throw lastError;
 }
 const cache = new Map(); // In-memory cache
@@ -126,7 +140,7 @@ const CACHE_TTL = 3600000; // 1 hour
 /**
  * Fetch POI from Overpass API with specific categories
  * Categories: convenience, cafe, restaurant, station,
- * supermarket, pharmacy, hospital, school, university,
+ * supermarket, pharmacy, hospital, police, fire_station, school, university,
  * bank, atm, fuel, parking, hotel, bus_stop, park, mall
  */
 app.get("/api/poi", async (req, res) => {
@@ -168,6 +182,10 @@ app.get("/api/poi", async (req, res) => {
         queries.push(`node["amenity"="pharmacy"](around:${radius},${lat},${lon});`);
       } else if (cat === "hospital") {
         queries.push(`node["amenity"="hospital"](around:${radius},${lat},${lon});`);
+      } else if (cat === "police") {
+        queries.push(`node["amenity"="police"](around:${radius},${lat},${lon});`);
+      } else if (cat === "fire_station") {
+        queries.push(`node["amenity"="fire_station"](around:${radius},${lat},${lon});`);
       } else if (cat === "school") {
         queries.push(`node["amenity"="school"](around:${radius},${lat},${lon});`);
       } else if (cat === "university") {

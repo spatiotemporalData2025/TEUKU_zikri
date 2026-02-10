@@ -108,6 +108,45 @@ Advantages:
 
 ---
 
+# Voronoi Diagram (Concept)
+
+**Definition:** A Voronoi diagram partitions space into cells; each cell contains points closest to a generator point.
+
+**Why we use it:** It provides a clean way to estimate each POI’s influence area.
+
+```mermaid
+graph TD
+  P1((POI 1)) --> C1[Voronoi Cell 1]
+  P2((POI 2)) --> C2[Voronoi Cell 2]
+  P3((POI 3)) --> C3[Voronoi Cell 3]
+```
+
+---
+
+# Proximity (Voronoi) Method
+
+**Goal:** show each POI’s influence area, while analysis stays within the target area.
+
+Steps:
+1. Fetch POI with **2x area** (radius × $\sqrt{2}$)
+2. Compute Voronoi on the **outer bounding box**
+3. Analyze + visualize only the **inner box (original radius)**
+4. Rank place names by **largest cell area**
+
+---
+
+# Image Explanation (Proximity)
+
+**Image 1 — before 2x area fetch**
+- Data only from the original radius
+- Edge Voronoi cells are clipped → outer areas look darker
+
+**Image 2 — after 2x area fetch + inner analysis**
+- Voronoi computed on the outer box
+- Analysis only on the inner box → area proportion is more accurate
+
+---
+
 # Algorithm: DBSCAN + Convex Hull
 
 **Complexity: O(n²) (naive), acceptable for demo scale**

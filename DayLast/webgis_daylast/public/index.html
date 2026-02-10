@@ -33,6 +33,20 @@
         </div>
       </div>
 
+      <div class="card">
+        <h2>Map Mode</h2>
+        <div class="toggle-group">
+          <label>
+            <input type="radio" name="mapMode" value="urban" />
+            Urban Activity Map
+          </label>
+          <label>
+            <input type="radio" name="mapMode" value="proximity" checked />
+            Facility Proximity Map (Voronoi)
+          </label>
+        </div>
+      </div>
+
 
       <div id="overpassControls" class="card" style="display: block;">
         <h2>POI Fetch</h2>
@@ -60,6 +74,8 @@
             <label><input type="checkbox" value="supermarket" checked /> Supermarket</label>
             <label><input type="checkbox" value="pharmacy" /> Pharmacy</label>
             <label><input type="checkbox" value="hospital" /> Hospital</label>
+            <label><input type="checkbox" value="police" /> Police</label>
+            <label><input type="checkbox" value="fire_station" /> Fire Station</label>
             <label><input type="checkbox" value="school" /> School</label>
             <label><input type="checkbox" value="university" /> University</label>
             <label><input type="checkbox" value="bank" /> Bank</label>
@@ -76,51 +92,70 @@
         <p class="muted small" id="poiStatus"></p>
       </div>
 
-      <div class="card">
-        <label>
-          Hour range (0–23):
-          <span id="hourLabel">7–18</span>
-        </label>
-        <div class="range-group">
-          <input id="hourStart" type="range" min="0" max="23" value="7" step="1" />
-          <input id="hourEnd" type="range" min="0" max="23" value="18" step="1" />
+        <div id="urbanControls">
+          <div class="card">
+            <label>
+              Hour range (0–23):
+              <span id="hourLabel">7–18</span>
+            </label>
+            <div class="range-group">
+              <input id="hourStart" type="range" min="0" max="23" value="7" step="1" />
+              <input id="hourEnd" type="range" min="0" max="23" value="18" step="1" />
+            </div>
+            <p class="muted small">Gunakan dua slider untuk memilih rentang jam.</p>
+          </div>
+
+          <div class="card">
+            <label>
+              DBSCAN epsilon (meters):
+              <span id="epsLabel">625</span>
+            </label>
+            <input id="epsSlider" type="range" min="50" max="1000" value="625" step="25" />
+            <label style="margin-top:8px; display:block;">
+              DBSCAN minPts:
+              <span id="minPtsLabel">3</span>
+            </label>
+            <input id="minPtsSlider" type="range" min="3" max="30" value="3" step="1" />
+            <p class="muted small">
+              Epsilon = jarak maksimum antar titik dalam satu klaster.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <button id="refreshBtn">Refresh Render</button>
+              <button id="fitBtn">Fit to Data</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Hotspot</h2>
+            <label>
+              Jumlah hotspot:
+              <span id="hotspotLabel">5</span>
+            </label>
+            <input id="hotspotSlider" type="range" min="1" max="20" value="5" step="1" />
+            <ol id="top5"></ol>
+            <p class="muted small" id="stats"></p>
+          </div>
         </div>
-        <p class="muted small">Gunakan dua slider untuk memilih rentang jam.</p>
-      </div>
 
-      <div class="card">
-        <label>
-          DBSCAN epsilon (meters):
-          <span id="epsLabel">625</span>
-        </label>
-        <input id="epsSlider" type="range" min="50" max="1000" value="625" step="25" />
-        <label style="margin-top:8px; display:block;">
-          DBSCAN minPts:
-          <span id="minPtsLabel">3</span>
-        </label>
-        <input id="minPtsSlider" type="range" min="3" max="30" value="3" step="1" />
-        <p class="muted small">
-          Epsilon = jarak maksimum antar titik dalam satu klaster.
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="row">
-          <button id="refreshBtn">Refresh Render</button>
-          <button id="fitBtn">Fit to Data</button>
+        <div id="proximityControls" style="display:none;">
+          <div class="card">
+            <h2>Proximity (Voronoi)</h2>
+            <label class="row" style="align-items:center; gap:8px;">
+              <input id="voronoiEnable" type="checkbox" />
+              Enable Voronoi proximity
+            </label>
+            <label>
+              Max cells:
+              <span id="voronoiMaxCellsLabel">200</span>
+            </label>
+            <input id="voronoiMaxCells" type="range" min="50" max="1000" value="200" step="50" />
+            <p class="muted small" id="voronoiStatus">Disabled</p>
+            <ol id="voronoiTop"></ol>
+          </div>
         </div>
-      </div>
-
-      <div class="card">
-        <h2>Hotspot</h2>
-        <label>
-          Jumlah hotspot:
-          <span id="hotspotLabel">5</span>
-        </label>
-        <input id="hotspotSlider" type="range" min="1" max="20" value="5" step="1" />
-        <ol id="top5"></ol>
-        <p class="muted small" id="stats"></p>
-      </div>
 
     </aside>
 
@@ -135,6 +170,7 @@
     crossorigin=""
   ></script>
 
+    <script src="https://unpkg.com/d3-delaunay@6"></script>
   <script src="https://unpkg.com/opening_hours@3.6.0/dist/opening_hours.min.js"></script>
 
   <script src="main.js"></script>

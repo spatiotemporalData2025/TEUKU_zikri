@@ -219,6 +219,45 @@ else color = "blue"  // cool
 
 ---
 
+## Voronoi Diagram (Concept)
+
+**Definition:** A Voronoi diagram partitions space into cells, where each cell contains the region closest to one generator point.
+
+**Why it matters:** It provides a clear, geometry-based way to estimate each POI’s local influence area.
+
+```mermaid
+graph TD
+  P1((POI 1)) --> C1[Voronoi Cell 1]
+  P2((POI 2)) --> C2[Voronoi Cell 2]
+  P3((POI 3)) --> C3[Voronoi Cell 3]
+```
+
+---
+
+## Proximity (Voronoi) Method
+
+**Goal:** Show each POI’s influence area using Voronoi, while keeping analysis limited to the target area.
+
+**Steps:**
+1. **Fetch POI** using the user radius with **2x area** (radius multiplied by $\sqrt{2}$).
+2. **Compute Voronoi** on the larger bounding box (2x area) to stabilize edge cells.
+3. **Display & analysis** only on the **inner bounding** (original radius) for relevant results.
+4. **Ranking**: list place names by largest Voronoi cell area.
+
+---
+
+## Image Explanation (Proximity)
+
+**Image 1 — before 2x area fetch**
+- Data is fetched only within the original radius.
+- Edge Voronoi cells are **clipped**, so outer areas look darker/smaller than they should.
+
+**Image 2 — after 2x area fetch + inner analysis**
+- Data is fetched in a **2x larger area**, Voronoi is computed on the outer box.
+- Analysis & visualization use only the **inner box**, giving a more accurate area proportion.
+
+---
+
 ## Overpass API: Query POI
 
 ### Endpoint
